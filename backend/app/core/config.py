@@ -68,6 +68,24 @@ class Settings(BaseSettings):
         alias="XPERT_SQLSERVER_TRUST_CERTIFICATE",
     )
 
+    jwt_secret_key: str = Field(
+        default="change-me-in-production-use-long-random-secret",
+        alias="JWT_SECRET_KEY",
+    )
+    jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    access_token_expire_minutes: int = Field(default=15, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    refresh_token_expire_days: int = Field(default=7, alias="REFRESH_TOKEN_EXPIRE_DAYS")
+    refresh_cookie_name: str = Field(default="refresh_token", alias="REFRESH_COOKIE_NAME")
+    refresh_cookie_secure: bool = Field(default=False, alias="REFRESH_COOKIE_SECURE")
+    refresh_cookie_samesite: str = Field(default="lax", alias="REFRESH_COOKIE_SAMESITE")
+    password_min_length: int = Field(default=8, alias="PASSWORD_MIN_LENGTH")
+    login_rate_limit: int = Field(default=5, alias="LOGIN_RATE_LIMIT")
+    login_rate_window_seconds: int = Field(default=60, alias="LOGIN_RATE_WINDOW_SECONDS")
+    login_rate_allow_memory_fallback: bool = Field(
+        default=True,
+        alias="LOGIN_RATE_ALLOW_MEMORY_FALLBACK",
+    )
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
