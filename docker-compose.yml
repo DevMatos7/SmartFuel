@@ -1,0 +1,95 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-smartfuel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartfuel}
+      POSTGRES_DB: ${POSTGRES_DB:-smartfuel}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-smartfuel} -d ${POSTGRES_DB:-smartfuel}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-smartfuel}:${POSTGRES_PASSWORD:-smartfuel}@postgres:5432/${POSTGRES_DB:-smartfuel}
+      DATABASE_URL_SYNC: postgresql+psycopg://${POSTGRES_USER:-smartfuel}:${POSTGRES_PASSWORD:-smartfuel}@postgres:5432/${POSTGRES_DB:-smartfuel}
+      REDIS_URL: redis://redis:6379/0
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+      MINIO_BUCKET: ${MINIO_BUCKET:-smartfuel}
+      MINIO_SECURE: ${MINIO_SECURE:-false}
+      XPERT_SQLSERVER_HOST: ${XPERT_SQLSERVER_HOST:-}
+      XPERT_SQLSERVER_PORT: ${XPERT_SQLSERVER_PORT:-1433}
+      XPERT_SQLSERVER_DATABASE: ${XPERT_SQLSERVER_DATABASE:-atxdados}
+      XPERT_SQLSERVER_USER: ${XPERT_SQLSERVER_USER:-}
+      XPERT_SQLSERVER_PASSWORD: ${XPERT_SQLSERVER_PASSWORD:-}
+      XPERT_SQLSERVER_DRIVER: ${XPERT_SQLSERVER_DRIVER:-ODBC Driver 18 for SQL Server}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  minio_data:
