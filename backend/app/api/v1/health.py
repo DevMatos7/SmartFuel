@@ -1,27 +1,17 @@
 from fastapi import APIRouter
 
 from app.core.config import settings
-from app.schemas.health import DetailedHealthResponse, HealthResponse
-from app.services.health import check_dependencies
+from app.schemas.health import API_SERVICE_NAME, DetailedHealthResponse, HealthResponse
+from app.services.health import build_detailed_health
 
 router = APIRouter()
 
 
 @router.get("/health", response_model=DetailedHealthResponse)
 async def health_v1() -> DetailedHealthResponse:
-    deps = await check_dependencies()
-    overall = "ok" if deps["database"] == "ok" else "degraded"
-    return DetailedHealthResponse(
-        status=overall,
-        service="api-v1",
-        version=settings.app_version,
-        environment=settings.app_env,
-        database=deps["database"],
-        redis=deps["redis"],
-        minio=deps["minio"],
-    )
+    return await build_detailed_health(settings.app_version)
 
 
 @router.get("/health/live", response_model=HealthResponse)
 async def health_live() -> HealthResponse:
-    return HealthResponse(status="ok", service="api-v1", version=settings.app_version)
+    return HealthResponse(version=settings.app_version, service=API_SERVICE_NAME)

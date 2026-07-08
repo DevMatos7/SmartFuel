@@ -10,7 +10,8 @@ from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging, get_logger
-from app.schemas.health import HealthResponse
+from app.core.middleware import RequestIdMiddleware
+from app.schemas.health import API_SERVICE_NAME, HealthResponse
 
 configure_logging()
 logger = get_logger(__name__)
@@ -31,6 +32,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+app.add_middleware(RequestIdMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -45,4 +47,4 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/health", response_model=HealthResponse, tags=["health"])
 async def health_root() -> HealthResponse:
-    return HealthResponse(status="ok", service="backend", version=settings.app_version)
+    return HealthResponse(service=API_SERVICE_NAME, version=settings.app_version)

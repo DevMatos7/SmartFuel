@@ -5,7 +5,9 @@ COPY package.json package-lock.json* ./
 RUN npm install
 COPY . .
 ARG VITE_API_BASE_URL=http://localhost:8000
+ARG VITE_APP_VERSION=0.1.0
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_APP_VERSION=$VITE_APP_VERSION
 RUN npm run build
 
 FROM nginx:1.27-alpine

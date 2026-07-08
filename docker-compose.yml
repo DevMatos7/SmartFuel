@@ -46,7 +46,10 @@ services:
     build:
       context: ./backend
     environment:
+      APP_NAME: ${APP_NAME:-Inteligência Auto Postos}
       APP_ENV: ${APP_ENV:-development}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_VERSION: ${APP_VERSION:-0.1.0}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-smartfuel}:${POSTGRES_PASSWORD:-smartfuel}@postgres:5432/${POSTGRES_DB:-smartfuel}
@@ -55,7 +58,7 @@ services:
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
-      MINIO_BUCKET: ${MINIO_BUCKET:-smartfuel}
+      MINIO_BUCKET: ${MINIO_BUCKET:-evidences}
       MINIO_SECURE: ${MINIO_SECURE:-false}
       XPERT_SQLSERVER_HOST: ${XPERT_SQLSERVER_HOST:-}
       XPERT_SQLSERVER_PORT: ${XPERT_SQLSERVER_PORT:-1433}
@@ -63,6 +66,8 @@ services:
       XPERT_SQLSERVER_USER: ${XPERT_SQLSERVER_USER:-}
       XPERT_SQLSERVER_PASSWORD: ${XPERT_SQLSERVER_PASSWORD:-}
       XPERT_SQLSERVER_DRIVER: ${XPERT_SQLSERVER_DRIVER:-ODBC Driver 18 for SQL Server}
+      XPERT_SQLSERVER_ENCRYPT: ${XPERT_SQLSERVER_ENCRYPT:-true}
+      XPERT_SQLSERVER_TRUST_CERTIFICATE: ${XPERT_SQLSERVER_TRUST_CERTIFICATE:-true}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     depends_on:
@@ -84,6 +89,7 @@ services:
       context: ./frontend
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+        VITE_APP_VERSION: ${APP_VERSION:-0.1.0}
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:

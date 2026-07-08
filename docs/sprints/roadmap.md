@@ -20,3 +20,12 @@ Ordem obrigatória:
 | 13 | Automação de cotações (IA/portal) |
 
 Cada sprint termina com: funcionalidade utilizável, migrations, testes, docs, Compose e relatório + script da próxima solicitação.
+
+## Documentação por sprint
+
+Todas as sprints seguem o padrão **PDR + RDC** descrito em [README.md](./README.md).
+
+| Sprint | Documento |
+|--------|-------------|
+| 0 | [sprint-00.md](./sprint-00.md) |
+| 1+ | Copiar [TEMPLATE.md](./TEMPLATE.md) → `sprint-NN.md` |

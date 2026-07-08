@@ -1,37 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchHealth, fetchRootHealth } from "../services/health";
+import { StatusPill } from "../components/StatusPill";
+import { SystemStatusBanner } from "../components/SystemStatusBanner";
+import { useHealthStatus } from "../hooks/useHealthStatus";
 
-function StatusPill({ label, value }: { label: string; value?: string }) {
-  const ok = value === "ok" || value === "configured";
-  const tone = !value
-    ? "bg-ink-700 text-white/60"
-    : ok
-      ? "bg-fuel-600/30 text-fuel-400 ring-1 ring-fuel-500/40"
-      : "bg-red-900/40 text-red-300 ring-1 ring-red-500/30";
+const FRONTEND_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
 
-  return (
-    <div className={`rounded-lg px-4 py-3 ${tone}`}>
-      <p className="text-xs uppercase tracking-wider opacity-70">{label}</p>
-      <p className="mt-1 font-display text-lg font-semibold capitalize">{value ?? "—"}</p>
-    </div>
-  );
+function formatDateTime(value: Date | null) {
+  if (!value) {
+    return "—";
+  }
+  return value.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function HealthBoard() {
-  const detailed = useQuery({
-    queryKey: ["health", "v1"],
-    queryFn: fetchHealth,
-    refetchInterval: 15_000,
-  });
-
-  const root = useQuery({
-    queryKey: ["health", "root"],
-    queryFn: fetchRootHealth,
-    refetchInterval: 15_000,
-  });
-
-  const apiOnline = detailed.isSuccess || root.isSuccess;
-  const apiError = detailed.isError && root.isError;
+  const { data, uiStatus, lastCheckedAt, verifyAgain, isFetching } = useHealthStatus();
+  const pending = uiStatus === "loading" || isFetching;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-10 px-6 py-12">
@@ -43,71 +31,72 @@ export function HealthBoard() {
           Inteligência Auto Postos
         </h1>
         <p className="max-w-2xl text-base text-white/70">
-          Página técnica da Sprint 0 — fundação da API, infraestrutura Docker e checagem de
-          serviços. Sem autenticação ou regras de negócio nesta etapa.
+          Plataforma de inteligência de combustíveis — página técnica da Sprint 0 para validar
+          API, banco, cache e armazenamento de arquivos.
         </p>
       </header>
 
       <section className="rounded-2xl border border-white/10 bg-ink-900/70 p-6 backdrop-blur">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="space-y-6">
           <div>
-            <h2 className="font-display text-xl font-semibold text-white">Status da API</h2>
-            <p className="text-sm text-white/55">Atualiza a cada 15 segundos</p>
+            <h2 className="font-display text-xl font-semibold text-white">Status geral</h2>
+            <p className="text-sm text-white/55">Diagnóstico do ambiente Docker</p>
           </div>
-          <span
-            className={`rounded-full px-4 py-1.5 font-display text-sm font-semibold ${
-              apiOnline
-                ? "bg-fuel-600/25 text-fuel-400"
-                : apiError
-                  ? "bg-red-900/50 text-red-300"
-                  : "bg-ink-700 text-white/60"
-            }`}
-          >
-            {detailed.isLoading || root.isLoading
-              ? "Verificando…"
-              : apiOnline
-                ? "Online"
-                : "Indisponível"}
-          </span>
-        </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatusPill label="API" value={apiOnline ? "ok" : apiError ? "unavailable" : undefined} />
-          <StatusPill label="PostgreSQL" value={detailed.data?.database} />
-          <StatusPill label="Redis" value={detailed.data?.redis} />
-          <StatusPill label="MinIO" value={detailed.data?.minio} />
-        </div>
+          <SystemStatusBanner status={uiStatus} />
 
-        {(detailed.data || root.data) && (
-          <dl className="mt-6 grid gap-2 border-t border-white/10 pt-4 text-sm text-white/65 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <StatusPill
+              label="API"
+              status={pending ? undefined : data ? data.services.api.status : "unhealthy"}
+              pending={pending}
+            />
+            <StatusPill
+              label="Banco de dados"
+              status={data?.services.database.status}
+              pending={pending}
+            />
+            <StatusPill
+              label="Redis"
+              status={data?.services.redis.status}
+              pending={pending}
+            />
+            <StatusPill
+              label="Arquivos"
+              status={data?.services.object_storage.status}
+              pending={pending}
+            />
+          </div>
+
+          <dl className="grid gap-2 border-t border-white/10 pt-4 text-sm text-white/65 sm:grid-cols-2">
             <div>
-              <dt className="text-white/40">Versão</dt>
-              <dd className="font-medium text-white/80">
-                {detailed.data?.version ?? root.data?.version}
-              </dd>
+              <dt className="text-white/40">Última verificação</dt>
+              <dd className="font-medium text-white/80">{formatDateTime(lastCheckedAt)}</dd>
             </div>
             <div>
-              <dt className="text-white/40">Ambiente</dt>
-              <dd className="font-medium text-white/80">
-                {detailed.data?.environment ?? "—"}
-              </dd>
+              <dt className="text-white/40">Versão da API</dt>
+              <dd className="font-medium text-white/80">{data?.version ?? "—"}</dd>
             </div>
           </dl>
-        )}
 
-        {apiError && (
-          <p className="mt-4 text-sm text-red-300">
-            Não foi possível contatar o backend. Confirme se o Compose está no ar e se{" "}
-            <code className="rounded bg-ink-800 px-1.5 py-0.5">VITE_API_BASE_URL</code> está
-            correto.
-          </p>
-        )}
+          <button
+            type="button"
+            onClick={verifyAgain}
+            disabled={pending}
+            className="inline-flex items-center justify-center rounded-lg bg-fuel-600 px-5 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-fuel-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuel-400 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Verificar novamente
+          </button>
+        </div>
       </section>
 
-      <footer className="text-sm text-white/40">
-        Documentação da API: <code className="text-white/55">/docs</code> · Health:{" "}
-        <code className="text-white/55">/health</code> e{" "}
-        <code className="text-white/55">/api/v1/health</code>
+      <footer className="flex flex-wrap gap-4 text-sm text-white/40">
+        <span>
+          Versão frontend: <strong className="text-white/60">{FRONTEND_VERSION}</strong>
+        </span>
+        <span>
+          API docs: <code className="text-white/55">/docs</code>
+        </span>
       </footer>
     </main>
   );
