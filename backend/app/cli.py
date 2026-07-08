@@ -90,8 +90,31 @@ async def create_admin(args: argparse.Namespace) -> None:
             after_data={"email": email, "organization_id": str(org.id)},
             metadata={"source": "cli"},
         )
+        from app.seeds.master_data import seed_master_data_for_organization
+        from app.services.master_data_bootstrap_service import MasterDataBootstrapService
+
+        bootstrap = MasterDataBootstrapService(db)
+        await bootstrap.bootstrap_organization(
+            organization_id=org.id,
+            user_id=user.id,
+            audit_ctx=AuditContext(organization_id=org.id, user_id=user.id, ip_address=None, request_id=None),
+        )
         await db.commit()
         print(f"Administrador criado com sucesso: {email}")
+
+
+async def seed_master_data_cmd(args: argparse.Namespace) -> None:
+    org_id = uuid.UUID(args.organization_id)
+    async with AsyncSessionLocal() as db:
+        org = await db.get(Organization, org_id)
+        if org is None:
+            raise SystemExit("Organização não encontrada.")
+        from app.services.master_data_bootstrap_service import MasterDataBootstrapService
+
+        bootstrap = MasterDataBootstrapService(db)
+        result = await bootstrap.bootstrap_organization(organization_id=org_id)
+        await db.commit()
+        print(f"Seed concluído: {result}")
 
 
 def main() -> None:
@@ -109,6 +132,10 @@ def main() -> None:
     create.add_argument("--must-change-password", action="store_true", default=True)
     create.add_argument("--force", action="store_true")
     create.set_defaults(func=lambda args: asyncio.run(create_admin(args)))
+
+    seed = sub.add_parser("seed-master-data", help="Cria produtos e condições iniciais para uma organização")
+    seed.add_argument("--organization-id", required=True)
+    seed.set_defaults(func=lambda args: asyncio.run(seed_master_data_cmd(args)))
 
     args = parser.parse_args()
     args.func(args)

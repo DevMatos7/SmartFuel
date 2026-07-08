@@ -103,3 +103,10 @@ async def login(client, email: str, password: str) -> tuple[str, dict]:
     response = await client.post("/api/v1/auth/login", json={"email": email, "password": password})
     data = response.json()
     return data["access_token"], data
+
+
+async def seed_master_data(session: AsyncSession, org_id: uuid.UUID) -> dict[str, int | str]:
+    from app.services.master_data_bootstrap_service import MasterDataBootstrapService
+
+    bootstrap = MasterDataBootstrapService(session)
+    return await bootstrap.bootstrap_organization(organization_id=org_id)

@@ -5,17 +5,16 @@ from factories import create_user, login
 
 
 @pytest.mark.asyncio
-async def test_must_change_password_blocks_stations(client: AsyncClient, session_factory, org) -> None:
-    async with session_factory() as session:
-        await create_user(
-            session,
-            organization_id=org.id,
-            email="troca@test.com",
-            role_codes=["ADMIN"],
-            has_all_stations_access=True,
-            must_change_password=True,
-        )
-        await session.commit()
+async def test_must_change_password_blocks_stations(client: AsyncClient, db_session, org) -> None:
+    await create_user(
+        db_session,
+        organization_id=org.id,
+        email="troca@test.com",
+        role_codes=["ADMIN"],
+        has_all_stations_access=True,
+        must_change_password=True,
+    )
+    await db_session.flush()
 
     token, _ = await login(client, "troca@test.com", "SenhaSegura123")
     response = await client.get("/api/v1/stations", headers={"Authorization": f"Bearer {token}"})
@@ -24,17 +23,16 @@ async def test_must_change_password_blocks_stations(client: AsyncClient, session
 
 
 @pytest.mark.asyncio
-async def test_must_change_password_allows_me_and_change(client: AsyncClient, session_factory, org) -> None:
-    async with session_factory() as session:
-        await create_user(
-            session,
-            organization_id=org.id,
-            email="troca2@test.com",
-            role_codes=["ADMIN"],
-            has_all_stations_access=True,
-            must_change_password=True,
-        )
-        await session.commit()
+async def test_must_change_password_allows_me_and_change(client: AsyncClient, db_session, org) -> None:
+    await create_user(
+        db_session,
+        organization_id=org.id,
+        email="troca2@test.com",
+        role_codes=["ADMIN"],
+        has_all_stations_access=True,
+        must_change_password=True,
+    )
+    await db_session.flush()
 
     token, _ = await login(client, "troca2@test.com", "SenhaSegura123")
 
@@ -60,17 +58,16 @@ async def test_must_change_password_allows_me_and_change(client: AsyncClient, se
 
 
 @pytest.mark.asyncio
-async def test_must_change_password_blocks_users(client: AsyncClient, session_factory, org) -> None:
-    async with session_factory() as session:
-        await create_user(
-            session,
-            organization_id=org.id,
-            email="troca3@test.com",
-            role_codes=["ADMIN"],
-            has_all_stations_access=True,
-            must_change_password=True,
-        )
-        await session.commit()
+async def test_must_change_password_blocks_users(client: AsyncClient, db_session, org) -> None:
+    await create_user(
+        db_session,
+        organization_id=org.id,
+        email="troca3@test.com",
+        role_codes=["ADMIN"],
+        has_all_stations_access=True,
+        must_change_password=True,
+    )
+    await db_session.flush()
 
     token, _ = await login(client, "troca3@test.com", "SenhaSegura123")
     response = await client.get("/api/v1/users", headers={"Authorization": f"Bearer {token}"})

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { createOrganization, fetchOrganization, updateOrganization } from "../api/organizations";
 import { useAuth } from "../auth/AuthProvider";
+import { OrganizationPurchaseSettings } from "../components/organization/OrganizationPurchaseSettings";
 
 function formatCnpj(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 14);
@@ -120,6 +121,8 @@ export function OrganizationPage() {
           </div>
         )}
       </form>
+
+      <OrganizationPurchaseSettings />
     </div>
   );
 }

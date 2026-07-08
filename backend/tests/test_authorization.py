@@ -37,23 +37,22 @@ async def test_station_access_denied_for_unlinked_station(
 
 @pytest.mark.asyncio
 async def test_permission_removed_during_session(
-    client: AsyncClient, session_factory, consulta_user, branch_station, admin_user, auth_headers
+    client: AsyncClient, db_session, consulta_user, branch_station, admin_user, auth_headers
 ) -> None:
     token, _ = await login(client, "consulta@test.com", "SenhaSegura123")
     ok = await client.get("/api/v1/stations", headers={"Authorization": f"Bearer {token}"})
     assert ok.status_code == 200
 
-    async with session_factory() as session:
-        from sqlalchemy import delete
-        from app.models.user import UserStation
+    from sqlalchemy import delete
+    from app.models.user import UserStation
 
-        await session.execute(
-            delete(UserStation).where(
-                UserStation.user_id == consulta_user.id,
-                UserStation.station_id == branch_station.id,
-            )
+    await db_session.execute(
+        delete(UserStation).where(
+            UserStation.user_id == consulta_user.id,
+            UserStation.station_id == branch_station.id,
         )
-        await session.commit()
+    )
+    await db_session.flush()
 
     denied = await client.get(
         f"/api/v1/stations/{branch_station.id}",

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { StationSelector } from "../components/StationSelector";
@@ -12,15 +12,40 @@ const navItems = [
   { to: "/profile", label: "Perfil", permission: "dashboard.read" },
 ];
 
+const cadastrosItems = [
+  { to: "/products", label: "Produtos", permission: "products.read" },
+  { to: "/erp-products", label: "Produtos ERP", permission: "erp_products.read" },
+  { to: "/erp-products/import", label: "Importar produtos ERP", permission: "erp_products.import" },
+  { to: "/erp-suppliers/import", label: "Importar fornecedores ERP", permission: "master_data_imports.execute" },
+  { to: "/distributors", label: "Distribuidores", permission: "distributors.read" },
+  { to: "/payment-terms", label: "Prazos de pagamento", permission: "payment_terms.read" },
+  { to: "/supplier-rules", label: "Regras de fornecimento", permission: "supplier_rules.read" },
+];
+
 export function AuthenticatedLayout() {
   const { user, logout, hasPermission } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cadastrosOpen, setCadastrosOpen] = useState(false);
+
+  const visibleCadastros = useMemo(
+    () => cadastrosItems.filter((item) => hasPermission(item.permission)),
+    [hasPermission],
+  );
+
+  const isCadastrosActive = useMemo(
+    () => visibleCadastros.some((item) => location.pathname.startsWith(item.to.split("/import")[0])),
+    [location.pathname, visibleCadastros],
+  );
 
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (isCadastrosActive) setCadastrosOpen(true);
+  }, [isCadastrosActive]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -80,6 +105,38 @@ export function AuthenticatedLayout() {
                   {item.label}
                 </NavLink>
               ))}
+
+            {visibleCadastros.length > 0 && (
+              <div className="pt-1">
+                <button
+                  type="button"
+                  className={`flex w-full items-center justify-between rounded px-3 py-2 text-sm ${
+                    isCadastrosActive ? "bg-slate-100 font-medium text-slate-900" : "text-slate-700 hover:bg-slate-100"
+                  }`}
+                  onClick={() => setCadastrosOpen((v) => !v)}
+                  aria-expanded={cadastrosOpen}
+                >
+                  Cadastros
+                  <span className="text-xs">{cadastrosOpen ? "▾" : "▸"}</span>
+                </button>
+                {cadastrosOpen && (
+                  <div className="ml-2 mt-1 space-y-1 border-l border-slate-200 pl-2">
+                    {visibleCadastros.map((item) => (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        className={({ isActive }) =>
+                          `block rounded px-3 py-1.5 text-sm ${isActive ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-100"}`
+                        }
+                      >
+                        {item.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <Link to="/health" className="block rounded px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">
               Saúde do sistema
             </Link>

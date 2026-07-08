@@ -35,18 +35,17 @@ async def test_cannot_remove_admin_role_from_last_admin(
 
 @pytest.mark.asyncio
 async def test_admin_can_deactivate_when_another_admin_exists(
-    client: AsyncClient, session_factory, org, admin_user, auth_headers
+    client: AsyncClient, db_session, org, admin_user, auth_headers
 ) -> None:
-    async with session_factory() as session:
-        second = await create_user(
-            session,
-            organization_id=org.id,
-            email="admin2@test.com",
-            role_codes=["ADMIN"],
-            has_all_stations_access=True,
-        )
-        await session.commit()
-        second_id = second.id
+    second = await create_user(
+        db_session,
+        organization_id=org.id,
+        email="admin2@test.com",
+        role_codes=["ADMIN"],
+        has_all_stations_access=True,
+    )
+    await db_session.flush()
+    second_id = second.id
 
     users = await client.get("/api/v1/users", headers=auth_headers)
     target_id = next(item["id"] for item in users.json()["items"] if item["email"] == "admin@test.com")

@@ -294,6 +294,9 @@ class UserService:
                     )
                 )
 
+        await self.db.flush()
+        await self.db.refresh(user, attribute_names=["station_links"])
+
         await self.audit.log(
             ctx=audit_ctx,
             entity_type="user",

@@ -11,6 +11,15 @@ import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { OrganizationPage } from "./pages/OrganizationPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { DistributorDetailsPage } from "./pages/DistributorDetailsPage";
+import { DistributorsPage } from "./pages/DistributorsPage";
+import { ErpProductImportPage } from "./pages/ErpProductImportPage";
+import { ErpProductsPage } from "./pages/ErpProductsPage";
+import { ErpSupplierImportPage } from "./pages/ErpSupplierImportPage";
+import { PaymentTermsPage } from "./pages/PaymentTermsPage";
+import { ProductFormPage } from "./pages/ProductFormPage";
+import { ProductsPage } from "./pages/ProductsPage";
+import { SupplierRulesPage } from "./pages/SupplierRulesPage";
 import { StationFormPage } from "./pages/StationFormPage";
 import { StationsPage } from "./pages/StationsPage";
 import { UserFormPage } from "./pages/UserFormPage";
@@ -101,6 +110,94 @@ export default function App() {
               element={
                 <RequirePermission permission="audit.read">
                   <AuditPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="products"
+              element={
+                <RequirePermission permission="products.read">
+                  <ProductsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="products/new"
+              element={
+                <RequirePermission permission="products.write">
+                  <ProductFormPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="products/:productId"
+              element={
+                <RequirePermission permission="products.write">
+                  <ProductFormPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="erp-products"
+              element={
+                <RequirePermission permission="erp_products.read">
+                  <ErpProductsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="erp-products/import"
+              element={
+                <RequirePermission permission="erp_products.import">
+                  <ErpProductImportPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="erp-suppliers/import"
+              element={
+                <RequirePermission permission="master_data_imports.execute">
+                  <ErpSupplierImportPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="distributors"
+              element={
+                <RequirePermission permission="distributors.read">
+                  <DistributorsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="distributors/new"
+              element={
+                <RequirePermission permission="distributors.write">
+                  <DistributorDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="distributors/:distributorId"
+              element={
+                <RequirePermission permission="distributors.read">
+                  <DistributorDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="payment-terms"
+              element={
+                <RequirePermission permission="payment_terms.read">
+                  <PaymentTermsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="supplier-rules"
+              element={
+                <RequirePermission permission="supplier_rules.read">
+                  <SupplierRulesPage />
                 </RequirePermission>
               }
             />

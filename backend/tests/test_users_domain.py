@@ -75,17 +75,16 @@ async def test_has_all_stations_access_only_for_admin(
 
 
 @pytest.mark.asyncio
-async def test_update_user_stations(client: AsyncClient, session_factory, org, branch_station, headquarters, auth_headers) -> None:
-    async with session_factory() as session:
-        user = await create_user(
-            session,
-            organization_id=org.id,
-            email="vinculo@test.com",
-            role_codes=["CONSULTA"],
-            station_ids=[branch_station.id],
-        )
-        await session.commit()
-        user_id = user.id
+async def test_update_user_stations(client: AsyncClient, db_session, org, branch_station, headquarters, auth_headers) -> None:
+    user = await create_user(
+        db_session,
+        organization_id=org.id,
+        email="vinculo@test.com",
+        role_codes=["CONSULTA"],
+        station_ids=[branch_station.id],
+    )
+    await db_session.flush()
+    user_id = user.id
 
     response = await client.put(
         f"/api/v1/users/{user_id}/stations",

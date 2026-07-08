@@ -86,6 +86,19 @@ class Settings(BaseSettings):
         alias="LOGIN_RATE_ALLOW_MEMORY_FALLBACK",
     )
 
+    default_supplier_allowed: bool = Field(default=False, alias="DEFAULT_SUPPLIER_ALLOWED")
+    default_minimum_volume_liters: str = Field(
+        default="5000.000",
+        alias="DEFAULT_MINIMUM_VOLUME_LITERS",
+    )
+    master_data_import_max_bytes: int = Field(
+        default=5_242_880,
+        alias="MASTER_DATA_IMPORT_MAX_BYTES",
+    )
+
+    test_database_url: str = Field(default="", alias="TEST_DATABASE_URL")
+    test_database_url_sync: str = Field(default="", alias="TEST_DATABASE_URL_SYNC")
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

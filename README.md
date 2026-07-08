@@ -4,7 +4,9 @@ Sistema interno de inteligência de compra, precificação e análise de combust
 
 ## Sprint atual
 
-**Sprint 0 — Fundação técnica** concluída (sem autenticação, sem tabelas de negócio).
+**Sprint 2 — Cadastros mestres e mapeamento ERP** concluída.
+
+Sprint 1 (identidade, postos, usuários, auth) e Sprint 0 (fundação) também disponíveis.
 
 ## Pré-requisitos
 
@@ -63,12 +65,14 @@ Altere no `.env`: `BACKEND_PORT`, `FRONTEND_PORT`, `POSTGRES_PORT`, `REDIS_PORT`
 ## Testes
 
 ```bash
-# Backend (recomendado no container Python 3.12)
-docker compose exec backend pytest -q
-docker compose exec backend ruff check app tests
+# Subir banco de testes isolado
+docker compose -f docker-compose.yml -f docker-compose.test.yml up -d postgres_test
+
+# Backend (obrigatório TEST_DATABASE_URL — ver docs/testing/test-database.md)
+docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm backend pytest -q
 
 # Frontend
-cd frontend && npm install && npm run build
+cd frontend && npm install && npm run test:run && npm run build
 ```
 
 ## Migrations (Alembic)

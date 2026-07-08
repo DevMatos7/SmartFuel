@@ -60,20 +60,19 @@ async def test_logout_revokes_session(client: AsyncClient, admin_user) -> None:
 
 
 @pytest.mark.asyncio
-async def test_inactive_user_cannot_login(client: AsyncClient, session_factory, org) -> None:
+async def test_inactive_user_cannot_login(client: AsyncClient, db_session, org) -> None:
     from factories import create_user
 
-    async with session_factory() as session:
-        user = await create_user(
-            session,
-            organization_id=org.id,
-            email="inativo@test.com",
-            role_codes=["CONSULTA"],
-            has_all_stations_access=False,
-            station_ids=[],
-            active=False,
-        )
-        await session.commit()
+    await create_user(
+        db_session,
+        organization_id=org.id,
+        email="inativo@test.com",
+        role_codes=["CONSULTA"],
+        has_all_stations_access=False,
+        station_ids=[],
+        active=False,
+    )
+    await db_session.flush()
 
     response = await client.post(
         "/api/v1/auth/login",
@@ -84,24 +83,23 @@ async def test_inactive_user_cannot_login(client: AsyncClient, session_factory, 
 
 
 @pytest.mark.asyncio
-async def test_inactive_organization_blocks_login(client: AsyncClient, session_factory) -> None:
+async def test_inactive_organization_blocks_login(client: AsyncClient, db_session) -> None:
     from factories import create_organization, create_user
 
-    async with session_factory() as session:
-        org = await create_organization(session, cnpj="11222333000424")
-        org.active = False
-        await create_user(
-            session,
-            organization_id=org.id,
-            email="orginativa@test.com",
-            role_codes=["ADMIN"],
-            has_all_stations_access=True,
-        )
-        await session.commit()
+    org = await create_organization(db_session, cnpj="99888777000166")
+    org.active = False
+    await create_user(
+        db_session,
+        organization_id=org.id,
+        email=f"orginativa-{org.id}@test.com",
+        role_codes=["ADMIN"],
+        has_all_stations_access=True,
+    )
+    await db_session.flush()
 
     response = await client.post(
         "/api/v1/auth/login",
-        json={"email": "orginativa@test.com", "password": "SenhaSegura123"},
+        json={"email": f"orginativa-{org.id}@test.com", "password": "SenhaSegura123"},
     )
     assert response.status_code == 401
 
