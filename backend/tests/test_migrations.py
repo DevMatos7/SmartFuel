@@ -20,6 +20,11 @@ EXPECTED_SPRINT2_TABLES = {
     "master_data_import_jobs",
     "master_data_import_rows",
     "organization_business_settings",
+    "quotes",
+    "quote_items",
+    "quote_evidences",
+    "quote_change_history",
+    "organization_quote_counters",
 }
 
 

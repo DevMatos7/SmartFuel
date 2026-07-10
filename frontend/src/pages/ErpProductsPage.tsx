@@ -1,6 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { fetchXpertSummary } from "../api/xpert-integration";
 import {
   fetchErpProducts,
   fetchProducts,
@@ -39,6 +40,11 @@ export function ErpProductsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["erp-products", filters],
     queryFn: () => fetchErpProducts(filters),
+  });
+
+  const { data: xpertSummary } = useQuery({
+    queryKey: ["xpert-summary"],
+    queryFn: fetchXpertSummary,
   });
 
   const statusQueries = useQueries({
@@ -96,6 +102,18 @@ export function ErpProductsPage() {
         <div>
           <h1 className="text-xl font-semibold">Produtos ERP</h1>
           <p className="text-sm text-slate-500">Mapeamento dos produtos importados do ERP para o catálogo canônico.</p>
+          {xpertSummary && (
+            <p className="mt-2 text-xs text-slate-600">
+              Última sincronização XPERT:{" "}
+              {xpertSummary.last_success_at
+                ? new Date(xpertSummary.last_success_at).toLocaleString()
+                : "nunca"}
+              {" · "}
+              Status: {xpertSummary.status}
+              {" · "}
+              {xpertSummary.pending_products} produto(s) aguardando mapeamento
+            </p>
+          )}
         </div>
         {canImport && (
           <Link to="/erp-products/import" className="rounded bg-slate-900 px-4 py-2 text-sm text-white">

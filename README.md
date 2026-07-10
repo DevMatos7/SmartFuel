@@ -4,9 +4,9 @@ Sistema interno de inteligência de compra, precificação e análise de combust
 
 ## Sprint atual
 
-**Sprint 2 — Cadastros mestres e mapeamento ERP** concluída.
+**Sprint 3.1 — Estabilização da Central de Cotações** concluída.
 
-Sprint 1 (identidade, postos, usuários, auth) e Sprint 0 (fundação) também disponíveis.
+Sprint 3 (cotações) e sprints anteriores também disponíveis.
 
 ## Pré-requisitos
 
@@ -117,6 +117,9 @@ Dev server: http://localhost:5173
 - Arquitetura: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 - Decisões técnicas: [`docs/architecture/technical-decisions.md`](docs/architecture/technical-decisions.md)
 - Sprint 0 (PDR/RDC): [`docs/sprints/sprint-00.md`](docs/sprints/sprint-00.md)
+- Sprint 3 (cotações): [`docs/sprints/sprint-03.md`](docs/sprints/sprint-03.md)
+- Sprint 3.1 (estabilização): [`docs/sprints/sprint-03-1-stabilization.md`](docs/sprints/sprint-03-1-stabilization.md)
+- Regras de cotação: [`docs/business-rules/quotes.md`](docs/business-rules/quotes.md)
 - Padrão de sprints: [`docs/sprints/README.md`](docs/sprints/README.md)
 - BRIEF XPERT: [`docs/erp/xpert/CHECKLIST.md`](docs/erp/xpert/CHECKLIST.md)
 - Roadmap: [`docs/sprints/roadmap.md`](docs/sprints/roadmap.md)
@@ -129,4 +132,4 @@ Dev server: http://localhost:5173
 
 ## Próxima sprint
 
-**Sprint 1** — organizações, postos, usuários, JWT e auditoria.
+**Sprint 4** — elegibilidade, custo equivalente e ranking de distribuidoras.

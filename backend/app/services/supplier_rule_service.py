@@ -421,6 +421,7 @@ class SupplierRuleService:
         reference_date: date,
         specific: bool,
         distribution_base_id: uuid.UUID | None = None,
+        historical: bool = False,
     ) -> StationSupplierRule | None:
         base_candidates: list[uuid.UUID | None]
         if distribution_base_id is not None:
@@ -433,13 +434,14 @@ class SupplierRuleService:
                 StationSupplierRule.organization_id == organization_id,
                 StationSupplierRule.station_id == station_id,
                 StationSupplierRule.distributor_id == distributor_id,
-                StationSupplierRule.active.is_(True),
                 StationSupplierRule.valid_from <= reference_date,
                 or_(
                     StationSupplierRule.valid_until.is_(None),
                     StationSupplierRule.valid_until >= reference_date,
                 ),
             )
+            if not historical:
+                query = query.where(StationSupplierRule.active.is_(True))
             if specific:
                 query = query.where(StationSupplierRule.product_id == product_id)
             else:
@@ -481,6 +483,7 @@ class SupplierRuleService:
         product_id: uuid.UUID,
         reference_date: date | None = None,
         distribution_base_id: uuid.UUID | None = None,
+        historical: bool = False,
     ) -> EffectiveRuleResult:
         await self._ensure_station(station_id, organization_id)
         await self._ensure_distributor(distributor_id, organization_id)
@@ -506,6 +509,7 @@ class SupplierRuleService:
             reference_date=ref,
             specific=True,
             distribution_base_id=distribution_base_id,
+            historical=historical,
         )
         if specific:
             return self._rule_to_result(specific, RuleSource.PRODUCT_SPECIFIC)
@@ -518,6 +522,7 @@ class SupplierRuleService:
             reference_date=ref,
             specific=False,
             distribution_base_id=distribution_base_id,
+            historical=historical,
         )
         if general:
             return self._rule_to_result(general, RuleSource.DISTRIBUTOR_GENERAL)

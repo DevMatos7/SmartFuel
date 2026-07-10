@@ -44,9 +44,18 @@ class ErpSupplier(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         UUID(as_uuid=True), ForeignKey("distributors.id"), nullable=True, index=True
     )
     mapping_status: Mapped[str] = mapped_column(String(30), nullable=False, default="PENDING", index=True)
+    mapping_source: Mapped[str | None] = mapped_column(String(30), nullable=True)
     ignore_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     raw_payload: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     mapped_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
     mapped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    source_system: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    source_record_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    source_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_active: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    last_sync_run_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("erp_sync_runs.id"), nullable=True
+    )

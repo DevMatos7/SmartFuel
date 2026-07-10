@@ -3,12 +3,21 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-do
 import { useAuth } from "../auth/AuthProvider";
 import { StationSelector } from "../components/StationSelector";
 
+const analyticsItems = [
+  { to: "/analytics/fuel-sales", label: "Vendas de combustíveis", permission: "fuel_sales_analytics.read" },
+  { to: "/analytics/fuel-sales/quality", label: "Qualidade vendas", permission: "fuel_sales_data_quality.read" },
+];
+
 const navItems = [
   { to: "/", label: "Início", permission: "dashboard.read" },
+  { to: "/quotes", label: "Cotações", permission: "quotes.read" },
+  { to: "/quote-comparisons", label: "Comparar cotações", permission: "quote_comparisons.run" },
+  { to: "/quote-comparisons/history", label: "Histórico comparações", permission: "quote_comparisons.read" },
   { to: "/organization", label: "Organização", permission: "organizations.read" },
   { to: "/stations", label: "Postos", permission: "stations.read" },
   { to: "/users", label: "Usuários", permission: "users.read" },
   { to: "/audit", label: "Auditoria", permission: "audit.read" },
+  { to: "/integrations/xpert", label: "Integração XPERT", permission: "erp_integration.read" },
   { to: "/profile", label: "Perfil", permission: "dashboard.read" },
 ];
 
@@ -20,6 +29,7 @@ const cadastrosItems = [
   { to: "/distributors", label: "Distribuidores", permission: "distributors.read" },
   { to: "/payment-terms", label: "Prazos de pagamento", permission: "payment_terms.read" },
   { to: "/supplier-rules", label: "Regras de fornecimento", permission: "supplier_rules.read" },
+  { to: "/financial-parameters", label: "Parâmetros financeiros", permission: "financial_parameters.read" },
 ];
 
 export function AuthenticatedLayout() {
@@ -31,6 +41,11 @@ export function AuthenticatedLayout() {
 
   const visibleCadastros = useMemo(
     () => cadastrosItems.filter((item) => hasPermission(item.permission)),
+    [hasPermission],
+  );
+
+  const visibleAnalytics = useMemo(
+    () => analyticsItems.filter((item) => hasPermission(item.permission)),
     [hasPermission],
   );
 
@@ -105,6 +120,23 @@ export function AuthenticatedLayout() {
                   {item.label}
                 </NavLink>
               ))}
+
+            {visibleAnalytics.length > 0 && (
+              <div className="pt-2">
+                <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Análises</p>
+                {visibleAnalytics.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) =>
+                      `block rounded px-3 py-2 text-sm ${isActive ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-100"}`
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            )}
 
             {visibleCadastros.length > 0 && (
               <div className="pt-1">

@@ -43,6 +43,7 @@ def reset_login_rate_limit(monkeypatch) -> None:
 
     monkeypatch.setattr(settings, "login_rate_limit", 1000)
     monkeypatch.setattr(settings, "login_rate_allow_memory_fallback", True)
+    monkeypatch.setattr(settings, "object_storage_allow_memory_fallback", True)
     login_rate_limiter._memory.clear()
 
 

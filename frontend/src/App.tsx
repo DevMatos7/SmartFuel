@@ -19,11 +19,26 @@ import { ErpSupplierImportPage } from "./pages/ErpSupplierImportPage";
 import { PaymentTermsPage } from "./pages/PaymentTermsPage";
 import { ProductFormPage } from "./pages/ProductFormPage";
 import { ProductsPage } from "./pages/ProductsPage";
+import { QuoteComparisonDetailsPage } from "./pages/QuoteComparisonDetailsPage";
+import { QuoteComparisonHistoryPage } from "./pages/QuoteComparisonHistoryPage";
+import { QuoteComparisonPage } from "./pages/QuoteComparisonPage";
+import { FinancialParametersPage } from "./pages/FinancialParametersPage";
+import { QuoteDetailsPage } from "./pages/QuoteDetailsPage";
+import { QuoteFormPage } from "./pages/QuoteFormPage";
+import { QuotesPage } from "./pages/QuotesPage";
 import { SupplierRulesPage } from "./pages/SupplierRulesPage";
 import { StationFormPage } from "./pages/StationFormPage";
 import { StationsPage } from "./pages/StationsPage";
 import { UserFormPage } from "./pages/UserFormPage";
 import { UsersPage } from "./pages/UsersPage";
+import { XpertIntegrationPage } from "./pages/XpertIntegrationPage";
+import { XpertDatasetsPage, XpertSourcePage } from "./pages/XpertAdminPages";
+import { XpertManualSyncPage } from "./pages/XpertManualSyncPage";
+import { XpertCheckpointsPage } from "./pages/XpertCheckpointsPage";
+import { XpertSyncRunsPage } from "./pages/XpertSyncRunsPage";
+import { XpertSyncRunDetailsPage } from "./pages/XpertSyncRunDetailsPage";
+import { FuelSalesDashboardPage } from "./pages/FuelSalesDashboardPage";
+import { FuelSalesDataQualityPage } from "./pages/FuelSalesDataQualityPage";
 
 export default function App() {
   return (
@@ -198,6 +213,134 @@ export default function App() {
               element={
                 <RequirePermission permission="supplier_rules.read">
                   <SupplierRulesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes"
+              element={
+                <RequirePermission permission="quotes.read">
+                  <QuotesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quote-comparisons"
+              element={
+                <RequirePermission permission="quote_comparisons.run">
+                  <QuoteComparisonPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quote-comparisons/history"
+              element={
+                <RequirePermission permission="quote_comparisons.read">
+                  <QuoteComparisonHistoryPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quote-comparisons/:runId"
+              element={
+                <RequirePermission permission="quote_comparisons.read">
+                  <QuoteComparisonDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="financial-parameters"
+              element={
+                <RequirePermission permission="financial_parameters.read">
+                  <FinancialParametersPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/new"
+              element={
+                <RequirePermission permission="quotes.write">
+                  <QuoteFormPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/:quoteId"
+              element={
+                <RequirePermission permission="quotes.read">
+                  <QuoteDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert"
+              element={
+                <RequirePermission permission="erp_integration.read">
+                  <XpertIntegrationPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/source"
+              element={
+                <RequirePermission permission="erp_integration.read">
+                  <XpertSourcePage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/datasets"
+              element={
+                <RequirePermission permission="erp_integration.read">
+                  <XpertDatasetsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/checkpoints"
+              element={
+                <RequirePermission permission="erp_sync.read">
+                  <XpertCheckpointsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/sync"
+              element={
+                <RequirePermission permission="erp_sync.run">
+                  <XpertManualSyncPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/runs"
+              element={
+                <RequirePermission permission="erp_sync.read">
+                  <XpertSyncRunsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="integrations/xpert/runs/:runId"
+              element={
+                <RequirePermission permission="erp_sync.read">
+                  <XpertSyncRunDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-sales"
+              element={
+                <RequirePermission permission="fuel_sales_analytics.read">
+                  <FuelSalesDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-sales/quality"
+              element={
+                <RequirePermission permission="fuel_sales_data_quality.read">
+                  <FuelSalesDataQualityPage />
                 </RequirePermission>
               }
             />

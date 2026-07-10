@@ -31,6 +31,44 @@ class Permission(StrEnum):
     SUPPLIER_RULES_WRITE = "supplier_rules.write"
     MASTER_DATA_IMPORTS_READ = "master_data_imports.read"
     MASTER_DATA_IMPORTS_EXECUTE = "master_data_imports.execute"
+    QUOTES_READ = "quotes.read"
+    QUOTES_WRITE = "quotes.write"
+    QUOTES_ACTIVATE = "quotes.activate"
+    QUOTES_CANCEL = "quotes.cancel"
+    QUOTES_REVISE = "quotes.revise"
+    QUOTES_DUPLICATE = "quotes.duplicate"
+    QUOTE_ITEMS_WRITE = "quote_items.write"
+    QUOTE_EVIDENCES_READ = "quote_evidences.read"
+    QUOTE_EVIDENCES_WRITE = "quote_evidences.write"
+    QUOTE_EVIDENCES_DEACTIVATE = "quote_evidences.deactivate"
+    QUOTE_HISTORY_READ = "quote_history.read"
+    QUOTE_EXPIRATION_EXECUTE = "quote_expiration.execute"
+    QUOTE_COMPARISONS_READ = "quote_comparisons.read"
+    QUOTE_COMPARISONS_RUN = "quote_comparisons.run"
+    QUOTE_COMPARISONS_EXPORT = "quote_comparisons.export"
+    QUOTE_COMPARISONS_REPROCESS = "quote_comparisons.reprocess"
+    QUOTE_COMPARISONS_VIEW_CALCULATION = "quote_comparisons.view_calculation"
+    FINANCIAL_PARAMETERS_READ = "financial_parameters.read"
+    FINANCIAL_PARAMETERS_WRITE = "financial_parameters.write"
+    FINANCIAL_PARAMETERS_DEACTIVATE = "financial_parameters.deactivate"
+    ERP_INTEGRATION_READ = "erp_integration.read"
+    ERP_INTEGRATION_MANAGE = "erp_integration.manage"
+    ERP_INTEGRATION_TEST = "erp_integration.test"
+    ERP_SYNC_READ = "erp_sync.read"
+    ERP_SYNC_RUN = "erp_sync.run"
+    ERP_SYNC_CANCEL = "erp_sync.cancel"
+    ERP_SYNC_RETRY = "erp_sync.retry"
+    ERP_SYNC_MANAGE_SCHEDULE = "erp_sync.manage_schedule"
+    ERP_SYNC_RESET_CHECKPOINT = "erp_sync.reset_checkpoint"
+    ERP_SYNC_VIEW_STAGING = "erp_sync.view_staging"
+    ERP_SYNC_VIEW_ERRORS = "erp_sync.view_errors"
+    FUEL_SALES_ANALYTICS_READ = "fuel_sales_analytics.read"
+    FUEL_SALES_ANALYTICS_EXPORT = "fuel_sales_analytics.export"
+    FUEL_SALES_ANALYTICS_VIEW_MARGIN = "fuel_sales_analytics.view_margin"
+    FUEL_SALES_DATA_QUALITY_READ = "fuel_sales_data_quality.read"
+    FUEL_SALES_DATA_QUALITY_RECONCILE = "fuel_sales_data_quality.reconcile"
+    ERP_PAYMENT_METHODS_READ = "erp_payment_methods.read"
+    ERP_PAYMENT_METHODS_MAP = "erp_payment_methods.map"
 
 
 _MASTER_DATA_READ = frozenset(
@@ -64,6 +102,29 @@ ROLE_PERMISSIONS: dict[str, frozenset[Permission]] = {
             Permission.SUPPLIER_RULES_READ,
             Permission.SUPPLIER_RULES_WRITE,
             Permission.MASTER_DATA_IMPORTS_READ,
+            Permission.QUOTES_READ,
+            Permission.QUOTES_WRITE,
+            Permission.QUOTES_ACTIVATE,
+            Permission.QUOTES_CANCEL,
+            Permission.QUOTES_REVISE,
+            Permission.QUOTE_ITEMS_WRITE,
+            Permission.QUOTE_EVIDENCES_READ,
+            Permission.QUOTE_EVIDENCES_WRITE,
+            Permission.QUOTE_HISTORY_READ,
+            Permission.QUOTE_COMPARISONS_READ,
+            Permission.QUOTE_COMPARISONS_RUN,
+            Permission.QUOTE_COMPARISONS_EXPORT,
+            Permission.QUOTE_COMPARISONS_REPROCESS,
+            Permission.QUOTE_COMPARISONS_VIEW_CALCULATION,
+            Permission.FINANCIAL_PARAMETERS_READ,
+            Permission.ERP_INTEGRATION_READ,
+            Permission.ERP_SYNC_READ,
+            Permission.ERP_SYNC_VIEW_ERRORS,
+            Permission.FUEL_SALES_ANALYTICS_READ,
+            Permission.FUEL_SALES_ANALYTICS_EXPORT,
+            Permission.FUEL_SALES_ANALYTICS_VIEW_MARGIN,
+            Permission.FUEL_SALES_DATA_QUALITY_READ,
+            Permission.ERP_PAYMENT_METHODS_READ,
         }
     ),
     "COMPRADOR": frozenset(
@@ -79,6 +140,27 @@ ROLE_PERMISSIONS: dict[str, frozenset[Permission]] = {
             Permission.DISTRIBUTION_BASES_WRITE,
             Permission.PAYMENT_TERMS_READ,
             Permission.SUPPLIER_RULES_READ,
+            Permission.QUOTES_READ,
+            Permission.QUOTES_WRITE,
+            Permission.QUOTES_ACTIVATE,
+            Permission.QUOTES_CANCEL,
+            Permission.QUOTES_REVISE,
+            Permission.QUOTES_DUPLICATE,
+            Permission.QUOTE_ITEMS_WRITE,
+            Permission.QUOTE_EVIDENCES_READ,
+            Permission.QUOTE_EVIDENCES_WRITE,
+            Permission.QUOTE_HISTORY_READ,
+            Permission.QUOTE_COMPARISONS_READ,
+            Permission.QUOTE_COMPARISONS_RUN,
+            Permission.QUOTE_COMPARISONS_EXPORT,
+            Permission.QUOTE_COMPARISONS_REPROCESS,
+            Permission.QUOTE_COMPARISONS_VIEW_CALCULATION,
+            Permission.ERP_SYNC_READ,
+            Permission.FUEL_SALES_ANALYTICS_READ,
+            Permission.FUEL_SALES_DATA_QUALITY_READ,
+            Permission.FUEL_SALES_DATA_QUALITY_RECONCILE,
+            Permission.ERP_PAYMENT_METHODS_READ,
+            Permission.ERP_PAYMENT_METHODS_MAP,
         }
     ),
     "FINANCEIRO": frozenset(
@@ -92,6 +174,23 @@ ROLE_PERMISSIONS: dict[str, frozenset[Permission]] = {
             Permission.PAYMENT_TERMS_READ,
             Permission.PAYMENT_TERMS_WRITE,
             Permission.SUPPLIER_RULES_READ,
+            Permission.QUOTES_READ,
+            Permission.QUOTE_EVIDENCES_READ,
+            Permission.QUOTE_HISTORY_READ,
+            Permission.QUOTE_COMPARISONS_READ,
+            Permission.QUOTE_COMPARISONS_RUN,
+            Permission.QUOTE_COMPARISONS_EXPORT,
+            Permission.QUOTE_COMPARISONS_REPROCESS,
+            Permission.QUOTE_COMPARISONS_VIEW_CALCULATION,
+            Permission.FINANCIAL_PARAMETERS_READ,
+            Permission.FINANCIAL_PARAMETERS_WRITE,
+            Permission.FINANCIAL_PARAMETERS_DEACTIVATE,
+            Permission.ERP_INTEGRATION_READ,
+            Permission.ERP_SYNC_READ,
+            Permission.FUEL_SALES_ANALYTICS_READ,
+            Permission.FUEL_SALES_ANALYTICS_VIEW_MARGIN,
+            Permission.ERP_PAYMENT_METHODS_READ,
+            Permission.ERP_PAYMENT_METHODS_MAP,
         }
     ),
     "CONSULTA": frozenset(
@@ -99,6 +198,13 @@ ROLE_PERMISSIONS: dict[str, frozenset[Permission]] = {
             Permission.STATIONS_READ,
             Permission.DASHBOARD_READ,
             *_MASTER_DATA_READ,
+            Permission.QUOTES_READ,
+            Permission.QUOTE_EVIDENCES_READ,
+            Permission.QUOTE_HISTORY_READ,
+            Permission.QUOTE_COMPARISONS_READ,
+            Permission.QUOTE_COMPARISONS_EXPORT,
+            Permission.QUOTE_COMPARISONS_VIEW_CALCULATION,
+            Permission.FUEL_SALES_ANALYTICS_READ,
         }
     ),
 }

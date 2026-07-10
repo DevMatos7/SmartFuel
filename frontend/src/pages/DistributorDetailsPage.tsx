@@ -19,6 +19,7 @@ import {
   updateDistributionBase,
   updateDistributor,
 } from "../api/master-data";
+import { fetchXpertSummary } from "../api/xpert-integration";
 import { useAuth } from "../auth/AuthProvider";
 
 const distributorSchema = z.object({
@@ -78,6 +79,12 @@ export function DistributorDetailsPage() {
         page_size: 50,
       }),
     enabled: !isNew && tab === "erp" && !!distributorId,
+  });
+
+  const { data: xpertSummary } = useQuery({
+    queryKey: ["xpert-summary"],
+    queryFn: fetchXpertSummary,
+    enabled: !isNew && tab === "erp",
   });
 
   const distributorForm = useForm<DistributorForm>({
@@ -463,6 +470,18 @@ export function DistributorDetailsPage() {
           <p className="text-sm text-slate-500">
             Fornecedores do ERP vinculados a este distribuidor ou pendentes de mapeamento.
           </p>
+          {xpertSummary && (
+            <p className="text-xs text-slate-600">
+              Última sincronização XPERT:{" "}
+              {xpertSummary.last_success_at
+                ? new Date(xpertSummary.last_success_at).toLocaleString()
+                : "nunca"}
+              {" · "}
+              Status: {xpertSummary.status}
+              {" · "}
+              {xpertSummary.pending_suppliers} fornecedor(es) aguardando mapeamento
+            </p>
+          )}
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
               <thead className="border-b border-slate-200 text-slate-500">

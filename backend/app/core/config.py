@@ -51,6 +51,34 @@ class Settings(BaseSettings):
     minio_secret_key: str = Field(default="minioadmin", alias="MINIO_SECRET_KEY")
     minio_bucket: str = Field(default="evidences", alias="MINIO_BUCKET")
     minio_secure: bool = Field(default=False, alias="MINIO_SECURE")
+    minio_quote_evidence_bucket: str = Field(
+        default="quote-evidences",
+        alias="MINIO_QUOTE_EVIDENCE_BUCKET",
+    )
+    signed_url_expire_seconds: int = Field(default=300, alias="SIGNED_URL_EXPIRE_SECONDS")
+
+    quote_evidence_max_size_mb: int = Field(default=10, alias="QUOTE_EVIDENCE_MAX_SIZE_MB")
+    quote_expiration_interval_minutes: int = Field(
+        default=15,
+        alias="QUOTE_EXPIRATION_INTERVAL_MINUTES",
+    )
+    quote_duplicate_warning_window_minutes: int = Field(
+        default=60,
+        alias="QUOTE_DUPLICATE_WARNING_WINDOW_MINUTES",
+    )
+    quote_expiration_batch_size: int = Field(default=500, alias="QUOTE_EXPIRATION_BATCH_SIZE")
+    quote_expiration_lock_timeout_seconds: int = Field(
+        default=300,
+        alias="QUOTE_EXPIRATION_LOCK_TIMEOUT_SECONDS",
+    )
+    object_storage_allow_memory_fallback: bool = Field(
+        default=False,
+        alias="OBJECT_STORAGE_ALLOW_MEMORY_FALLBACK",
+    )
+
+    @property
+    def quote_evidence_max_bytes(self) -> int:
+        return self.quote_evidence_max_size_mb * 1024 * 1024
 
     # Preparado para Sprint 5 — não usado nesta sprint
     xpert_sqlserver_host: str = Field(default="", alias="XPERT_SQLSERVER_HOST")
@@ -66,6 +94,24 @@ class Settings(BaseSettings):
     xpert_sqlserver_trust_certificate: bool = Field(
         default=True,
         alias="XPERT_SQLSERVER_TRUST_CERTIFICATE",
+    )
+    xpert_odbc_driver: str = Field(
+        default="ODBC Driver 18 for SQL Server",
+        alias="XPERT_ODBC_DRIVER",
+    )
+    xpert_connection_timeout_seconds: int = Field(default=10, alias="XPERT_CONNECTION_TIMEOUT_SECONDS")
+    xpert_query_timeout_seconds: int = Field(default=120, alias="XPERT_QUERY_TIMEOUT_SECONDS")
+    xpert_sync_poll_interval_seconds: int = Field(default=15, alias="XPERT_SYNC_POLL_INTERVAL_SECONDS")
+    xpert_sync_default_batch_size: int = Field(default=1000, alias="XPERT_SYNC_DEFAULT_BATCH_SIZE")
+    xpert_sync_default_overlap_seconds: int = Field(default=300, alias="XPERT_SYNC_DEFAULT_OVERLAP_SECONDS")
+    xpert_sync_max_retries: int = Field(default=3, alias="XPERT_SYNC_MAX_RETRIES")
+    xpert_sync_retry_base_seconds: int = Field(default=60, alias="XPERT_SYNC_RETRY_BASE_SECONDS")
+    xpert_staging_retention_days: int = Field(default=30, alias="XPERT_STAGING_RETENTION_DAYS")
+    xpert_error_retention_days: int = Field(default=180, alias="XPERT_ERROR_RETENTION_DAYS")
+    xpert_allow_unsafe_privileges: bool = Field(default=False, alias="XPERT_ALLOW_UNSAFE_PRIVILEGES")
+    xpert_worker_heartbeat_timeout_seconds: int = Field(
+        default=300,
+        alias="XPERT_WORKER_HEARTBEAT_TIMEOUT_SECONDS",
     )
 
     jwt_secret_key: str = Field(

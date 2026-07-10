@@ -1,0 +1,1 @@
+export { QuoteStatusBadge } from "./QuoteStatusBadge";

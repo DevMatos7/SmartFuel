@@ -36,6 +36,14 @@ class ErpProduct(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     mapped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    source_system: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    source_record_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    source_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_active: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    last_sync_run_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("erp_sync_runs.id"), nullable=True
+    )
 
     history = relationship("ProductMappingHistory", back_populates="erp_product")
 

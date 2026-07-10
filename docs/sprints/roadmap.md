@@ -28,4 +28,8 @@ Todas as sprints seguem o padrão **PDR + RDC** descrito em [README.md](./README
 | Sprint | Documento |
 |--------|-------------|
 | 0 | [sprint-00.md](./sprint-00.md) |
-| 1+ | Copiar [TEMPLATE.md](./TEMPLATE.md) → `sprint-NN.md` |
+| 1 | [sprint-01.md](./sprint-01.md) |
+| 2 | [sprint-02.md](./sprint-02.md) |
+| 3 | [sprint-03.md](./sprint-03.md) |
+| 3.1 | [sprint-03-1-stabilization.md](./sprint-03-1-stabilization.md) |
+| 4+ | Copiar [TEMPLATE.md](./TEMPLATE.md) → `sprint-NN.md` |
