@@ -57,8 +57,9 @@ class FuelSalesFact(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     source_document_number: Mapped[str | None] = mapped_column(String(100), nullable=True)
     sold_at_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     business_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
-    erp_product_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("erp_products.id"), nullable=False, index=True
+    source_product_id: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    erp_product_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("erp_products.id"), nullable=True, index=True
     )
     canonical_product_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("products.id"), nullable=True, index=True
@@ -87,6 +88,8 @@ class FuelSalesFact(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     gross_margin_percent: Mapped[Decimal | None] = mapped_column(Numeric(18, 8), nullable=True)
     metric_eligibility_status: Mapped[str] = mapped_column(String(40), nullable=False, default="EXCLUDED", index=True)
     metric_exclusion_reasons: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    source_cfop: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    cfop_classification: Mapped[str | None] = mapped_column(String(40), nullable=True, index=True)
     source_record_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     source_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     last_sync_run_id: Mapped[uuid.UUID | None] = mapped_column(

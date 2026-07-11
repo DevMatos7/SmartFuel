@@ -126,6 +126,8 @@ class QuoteCreate(BaseModel):
     valid_until: datetime
     source_channel: str
     entry_method: str = "MANUAL"
+    origin: str = "MANUAL_OPERATIONAL"
+    analytics_eligible: bool = True
     seller_name: str | None = None
     seller_contact: str | None = None
     external_reference: str | None = None
@@ -142,6 +144,8 @@ class QuoteUpdate(BaseModel):
     valid_until: datetime | None = None
     source_channel: str | None = None
     entry_method: str | None = None
+    origin: str | None = None
+    analytics_eligible: bool | None = None
     seller_name: str | None = None
     seller_contact: str | None = None
     external_reference: str | None = None
@@ -162,6 +166,8 @@ class QuoteResponse(BaseModel):
     valid_until: datetime
     source_channel: str
     entry_method: str
+    origin: str
+    analytics_eligible: bool
     seller_name: str | None
     seller_contact: str | None
     external_reference: str | None

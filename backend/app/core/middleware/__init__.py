@@ -1,3 +1,3 @@
-from app.core.middleware.request_id import RequestIdMiddleware, get_request_id
+from app.core.middleware.request_id import RequestIdMiddleware, get_correlation_id, get_request_id
 
-__all__ = ["RequestIdMiddleware", "get_request_id"]
+__all__ = ["RequestIdMiddleware", "get_request_id", "get_correlation_id"]

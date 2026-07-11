@@ -14,6 +14,11 @@
 
 Fonte `UNSAFE` bloqueia sincronização quando `XPERT_ALLOW_UNSAFE_PRIVILEGES=false`.
 
+## Sprint 8 (benchmark)
+
+O cálculo compra × cotação **não consulta o SQL Server**. Usa apenas dados já no PostgreSQL.
+Sincronizações XPERT continuam manuais; agenda e produção com `sa` permanecem bloqueadas.
+
 ## Transporte
 
 - `Encrypt=yes` preferencial

@@ -1,0 +1,16 @@
+{
+  "marked": 6,
+  "quote_ids": [
+    "7e9192b0-c903-4673-9618-70412f652f5a",
+    "7445ed28-8749-4006-a52c-bd34e80e92f7",
+    "7f1d4378-d628-4d48-95d4-895fd7a60030",
+    "554ae46b-cb01-4953-b0d4-1a3d9e1ad5b8",
+    "702abb14-effb-4f03-9a15-c98ca94fd983",
+    "33b61346-54ff-42a8-bc74-ace121858968"
+  ],
+  "quote_numbers": [6, 1, 2, 3, 4, 5],
+  "origin": "SYNTHETIC_TEST",
+  "analytics_eligible": false,
+  "migration": "0019_sprint83_quote_origin",
+  "note": "Cotações de exemplo da Sprint 8.2 — excluídas de indicadores, oportunidades, exportações executivas e benchmark real."
+}

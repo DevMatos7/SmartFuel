@@ -17,6 +17,7 @@ minio==7.2.12
 reportlab==4.2.5
 pyodbc==5.2.0
 sqlglot==26.0.0
+defusedxml==0.7.1
 
 # Dev / QA
 pytest==8.3.4

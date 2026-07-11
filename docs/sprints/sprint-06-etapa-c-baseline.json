@@ -1,0 +1,15 @@
+﻿{
+  "recorded_at": "pre-load",
+  "period": {"from": "2026-06-10", "to": "2026-07-09"},
+  "facts_in_period": 7455,
+  "daily_metrics_rows": 118,
+  "last_completed_run": {"id": "446bd208-fcdd-4d2c-8fcb-bbbb6d6d0bd0", "status": "COMPLETED", "created_at": "2026-07-10 14:09:18.692134+00:00"},
+  "query_hash": "8961f530ad1da7dcdd63710893b06f3f4fc71ee8f8c9a8f944d08da051a66e9f",
+  "normalization_version": "FUEL_SALES_V2",
+  "hash_schema_version": 2,
+  "cfop_policy_version": "CFOP_POLICY_V2_FISCAL_VS_FUEL_KPI",
+  "unmapped_erp_products": 1244,
+  "checkpoints_before": [{"wm": "2026-07-10T14:09:20.529565+00:00", "upper": "2026-07-10T14:09:20.529565+00:00"}],
+  "backup_file": "docs/sprints/backup_pre_etapa_c_20260610_20260709.dump",
+  "blocked": ["scheduler", "incremental_continuo", "payment_breakdown_definitivo", "producao_unsafe"]
+}

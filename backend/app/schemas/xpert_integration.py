@@ -121,6 +121,8 @@ class XpertSyncRunResponse(BaseModel):
     trigger_type: str
     sync_mode: str
     status: str
+    normalization_version: str | None = None
+    hash_schema_version: int | None = None
     checkpoint_before: str | None
     checkpoint_after: str | None
     rows_read: int

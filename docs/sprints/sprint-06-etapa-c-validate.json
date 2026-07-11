@@ -1,0 +1,468 @@
+{
+  "from": "2026-06-10",
+  "to": "2026-07-09",
+  "versions": {
+    "normalization_version": "FUEL_SALES_V2",
+    "hash_schema_version": 2,
+    "cfop_policy_version": "CFOP_POLICY_V2_FISCAL_VS_FUEL_KPI",
+    "query_hash": "8961f530ad1da7dcdd63710893b06f3f4fc71ee8f8c9a8f944d08da051a66e9f"
+  },
+  "isolation": {
+    "foreign_branch_rows": 0,
+    "xpert_total_rows": 7456,
+    "postgres_total_facts": 7455,
+    "duplicate_natural_keys": []
+  },
+  "checkpoints": [
+    {
+      "station_id": "1edc5c8b-0ba1-405c-a000-03e61e31521e",
+      "watermark_value": "2026-07-10T14:09:20.529565+00:00",
+      "source_upper_bound": "2026-07-10T14:09:20.529565+00:00",
+      "last_success_at": "2026-07-10 14:09:21.765375+00:00"
+    }
+  ],
+  "recent_runs": [
+    {
+      "id": "de31376c-ab71-4087-805e-55c141003c2b",
+      "status": "PARTIAL",
+      "rows_read": 7711,
+      "rows_inserted": 0,
+      "rows_updated": 7578,
+      "rows_unchanged": 132,
+      "rows_error": 1,
+      "checkpoint_before": "2026-07-10T14:09:20.529565+00:00",
+      "checkpoint_after": "2026-07-10T14:09:20.529565+00:00",
+      "normalization_version": "FUEL_SALES_V2",
+      "hash_schema_version": 2,
+      "window_start": "2026-06-09 00:00:00+00:00",
+      "window_end": "2026-07-10 00:00:00+00:00",
+      "created_at": "2026-07-11 00:25:25.284887+00:00"
+    },
+    {
+      "id": "446bd208-fcdd-4d2c-8fcb-bbbb6d6d0bd0",
+      "status": "COMPLETED",
+      "rows_read": 173,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 173,
+      "rows_error": 0,
+      "checkpoint_before": "2026-07-10T14:07:04.145867+00:00",
+      "checkpoint_after": "2026-07-10T14:09:20.529565+00:00",
+      "normalization_version": null,
+      "hash_schema_version": null,
+      "window_start": "2026-07-09 14:07:04.145867+00:00",
+      "window_end": "2026-07-10 14:09:20.529565+00:00",
+      "created_at": "2026-07-10 14:09:18.692134+00:00"
+    },
+    {
+      "id": "a2d4e8ed-1de4-4aad-8ed5-ed2f5e38fcf1",
+      "status": "COMPLETED",
+      "rows_read": 173,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 173,
+      "rows_error": 0,
+      "checkpoint_before": "2026-07-10T14:06:17.797324+00:00",
+      "checkpoint_after": "2026-07-10T14:07:04.145867+00:00",
+      "normalization_version": null,
+      "hash_schema_version": null,
+      "window_start": "2026-07-09 14:06:17.797324+00:00",
+      "window_end": "2026-07-10 14:07:04.145867+00:00",
+      "created_at": "2026-07-10 14:07:00.941553+00:00"
+    }
+  ],
+  "xpert_by_cfop": {
+    "5.102": {
+      "items_total": 26,
+      "items_active": 25,
+      "items_cancelled": 1,
+      "volume": "26.000000",
+      "net": "1479.4000",
+      "policy": "INCLUDE_AS_SALE_GENERAL",
+      "analytics_scope": "NON_FUEL_BY_DEFAULT"
+    },
+    "5.405": {
+      "items_total": 1,
+      "items_active": 1,
+      "items_cancelled": 0,
+      "volume": "1.000000",
+      "net": "12.9000",
+      "policy": "INCLUDE_AS_SALE_GENERAL_ST",
+      "analytics_scope": "NON_FUEL_BY_DEFAULT"
+    },
+    "5.656": {
+      "items_total": 7410,
+      "items_active": 7343,
+      "items_cancelled": 67,
+      "volume": "163860.744501",
+      "net": "1000641.1802",
+      "policy": "INCLUDE_AS_SALE",
+      "analytics_scope": "FUEL_CANDIDATE"
+    },
+    "5.667": {
+      "items_total": 19,
+      "items_active": 18,
+      "items_cancelled": 1,
+      "volume": "682.769995",
+      "net": "4605.8200",
+      "policy": "INCLUDE_AS_SALE",
+      "analytics_scope": "FUEL_CANDIDATE"
+    }
+  },
+  "postgres_by_cfop": [
+    {
+      "cfop": "5.102",
+      "classification": "INCLUDE_AS_SALE_GENERAL",
+      "cancelled": true,
+      "eligibility": "EXCLUDED",
+      "items": 1,
+      "volume": null,
+      "net": "86.9000"
+    },
+    {
+      "cfop": "5.405",
+      "classification": "INCLUDE_AS_SALE_GENERAL_ST",
+      "cancelled": false,
+      "eligibility": "EXCLUDED",
+      "items": 1,
+      "volume": null,
+      "net": "12.9000"
+    },
+    {
+      "cfop": "5.667",
+      "classification": "INCLUDE_AS_SALE",
+      "cancelled": true,
+      "eligibility": "EXCLUDED",
+      "items": 1,
+      "volume": "60.009998",
+      "net": "435.6700"
+    },
+    {
+      "cfop": "5.102",
+      "classification": "INCLUDE_AS_SALE_GENERAL",
+      "cancelled": false,
+      "eligibility": "EXCLUDED",
+      "items": 24,
+      "volume": null,
+      "net": "1342.6000"
+    },
+    {
+      "cfop": "5.656",
+      "classification": "INCLUDE_AS_SALE",
+      "cancelled": true,
+      "eligibility": "EXCLUDED",
+      "items": 67,
+      "volume": "3646.631004",
+      "net": "24372.7100"
+    },
+    {
+      "cfop": "5.656",
+      "classification": "INCLUDE_AS_SALE",
+      "cancelled": false,
+      "eligibility": "EXCLUDED",
+      "items": 47,
+      "volume": "97.000000",
+      "net": "4194.6200"
+    },
+    {
+      "cfop": "5.667",
+      "classification": "INCLUDE_AS_SALE",
+      "cancelled": false,
+      "eligibility": "ELIGIBLE_WITH_WARNINGS",
+      "items": 18,
+      "volume": "622.759997",
+      "net": "4170.1500"
+    },
+    {
+      "cfop": "5.656",
+      "classification": "INCLUDE_AS_SALE",
+      "cancelled": false,
+      "eligibility": "ELIGIBLE_WITH_WARNINGS",
+      "items": 7296,
+      "volume": "160117.113497",
+      "net": "972073.8502"
+    }
+  ],
+  "excluded_by_reason": [
+    {
+      "reasons": [
+        "CANCELLED_SALE"
+      ],
+      "items": 69,
+      "volume": "3706.641002",
+      "net": "24895.2800"
+    },
+    {
+      "reasons": [
+        "UNMAPPED_PRODUCT",
+        "NEGATIVE_GROSS_MARGIN"
+      ],
+      "items": 2,
+      "volume": "48.000000",
+      "net": "2063.5200"
+    },
+    {
+      "reasons": [
+        "EXCLUDED_NON_FUEL_PRODUCT"
+      ],
+      "items": 11,
+      "volume": null,
+      "net": "548.9000"
+    },
+    {
+      "reasons": [
+        "UNMAPPED_PRODUCT"
+      ],
+      "items": 59,
+      "volume": "49.000000",
+      "net": "2937.7000"
+    }
+  ],
+  "eligible_totals": {
+    "items": 7314,
+    "volume": "160739.873494",
+    "gross": "996211.3437",
+    "discount": "511.6600",
+    "net": "976244.0002",
+    "cost": "856296.4212",
+    "margin": "119947.5790"
+  },
+  "by_unit": [
+    {
+      "unit": null,
+      "items": 7455,
+      "volume": "164543.514496"
+    }
+  ],
+  "by_product_eligible": [
+    {
+      "product": "Etanol hidratado",
+      "fuel_family": "ETHANOL",
+      "items": 2669,
+      "volume": "58344.748667",
+      "net": "261940.3700"
+    },
+    {
+      "product": "Diesel B S10 comum",
+      "fuel_family": "DIESEL_B_S10",
+      "items": 802,
+      "volume": "56478.926035",
+      "net": "396101.6602"
+    },
+    {
+      "product": "Gasolina C comum",
+      "fuel_family": "GASOLINE_C",
+      "items": 3101,
+      "volume": "36743.337824",
+      "net": "252873.3800"
+    },
+    {
+      "product": "Gasolina C aditivada",
+      "fuel_family": "GASOLINE_C",
+      "items": 742,
+      "volume": "9172.860968",
+      "net": "65328.5900"
+    }
+  ],
+  "gates": {
+    "cfop_5102_in_fuel_kpi": 0,
+    "cfop_5405_in_fuel_kpi": 0,
+    "product_1507": [
+      {
+        "eligibility": "EXCLUDED",
+        "reasons": [
+          "EXCLUDED_NON_FUEL_PRODUCT"
+        ],
+        "items": 11,
+        "volume": null,
+        "net": "548.9000"
+      }
+    ],
+    "missing_cost_as_zero": 0,
+    "negative_margin_items": 0,
+    "aggregation_days_matched": 30,
+    "aggregation_days_total": 30,
+    "aggregation_detail": [
+      {
+        "day": "2026-06-10",
+        "facts_items": 278,
+        "agg_items": 278,
+        "match": true
+      },
+      {
+        "day": "2026-06-11",
+        "facts_items": 235,
+        "agg_items": 235,
+        "match": true
+      },
+      {
+        "day": "2026-06-12",
+        "facts_items": 290,
+        "agg_items": 290,
+        "match": true
+      },
+      {
+        "day": "2026-06-13",
+        "facts_items": 209,
+        "agg_items": 209,
+        "match": true
+      },
+      {
+        "day": "2026-06-14",
+        "facts_items": 178,
+        "agg_items": 178,
+        "match": true
+      },
+      {
+        "day": "2026-06-15",
+        "facts_items": 228,
+        "agg_items": 228,
+        "match": true
+      },
+      {
+        "day": "2026-06-16",
+        "facts_items": 238,
+        "agg_items": 238,
+        "match": true
+      },
+      {
+        "day": "2026-06-17",
+        "facts_items": 275,
+        "agg_items": 275,
+        "match": true
+      },
+      {
+        "day": "2026-06-18",
+        "facts_items": 257,
+        "agg_items": 257,
+        "match": true
+      },
+      {
+        "day": "2026-06-19",
+        "facts_items": 275,
+        "agg_items": 275,
+        "match": true
+      },
+      {
+        "day": "2026-06-20",
+        "facts_items": 246,
+        "agg_items": 246,
+        "match": true
+      },
+      {
+        "day": "2026-06-21",
+        "facts_items": 183,
+        "agg_items": 183,
+        "match": true
+      },
+      {
+        "day": "2026-06-22",
+        "facts_items": 292,
+        "agg_items": 292,
+        "match": true
+      },
+      {
+        "day": "2026-06-23",
+        "facts_items": 236,
+        "agg_items": 236,
+        "match": true
+      },
+      {
+        "day": "2026-06-24",
+        "facts_items": 247,
+        "agg_items": 247,
+        "match": true
+      },
+      {
+        "day": "2026-06-25",
+        "facts_items": 247,
+        "agg_items": 247,
+        "match": true
+      },
+      {
+        "day": "2026-06-26",
+        "facts_items": 244,
+        "agg_items": 244,
+        "match": true
+      },
+      {
+        "day": "2026-06-27",
+        "facts_items": 244,
+        "agg_items": 244,
+        "match": true
+      },
+      {
+        "day": "2026-06-28",
+        "facts_items": 167,
+        "agg_items": 167,
+        "match": true
+      },
+      {
+        "day": "2026-06-29",
+        "facts_items": 205,
+        "agg_items": 205,
+        "match": true
+      },
+      {
+        "day": "2026-06-30",
+        "facts_items": 268,
+        "agg_items": 268,
+        "match": true
+      },
+      {
+        "day": "2026-07-01",
+        "facts_items": 249,
+        "agg_items": 249,
+        "match": true
+      },
+      {
+        "day": "2026-07-02",
+        "facts_items": 286,
+        "agg_items": 286,
+        "match": true
+      },
+      {
+        "day": "2026-07-03",
+        "facts_items": 327,
+        "agg_items": 327,
+        "match": true
+      },
+      {
+        "day": "2026-07-04",
+        "facts_items": 239,
+        "agg_items": 239,
+        "match": true
+      },
+      {
+        "day": "2026-07-05",
+        "facts_items": 160,
+        "agg_items": 160,
+        "match": true
+      },
+      {
+        "day": "2026-07-06",
+        "facts_items": 251,
+        "agg_items": 251,
+        "match": true
+      },
+      {
+        "day": "2026-07-07",
+        "facts_items": 248,
+        "agg_items": 248,
+        "match": true
+      },
+      {
+        "day": "2026-07-08",
+        "facts_items": 263,
+        "agg_items": 263,
+        "match": true
+      },
+      {
+        "day": "2026-07-09",
+        "facts_items": 249,
+        "agg_items": 249,
+        "match": true
+      }
+    ]
+  }
+}

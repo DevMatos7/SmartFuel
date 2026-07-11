@@ -75,6 +75,7 @@ class QuoteCandidateService:
                 QuoteItem.product_id == product_id,
                 Quote.activated_at.isnot(None),
                 Quote.activated_at <= comp,
+                Quote.analytics_eligible.is_(True),
                 or_(Quote.cancelled_at.is_(None), Quote.cancelled_at > comp),
                 or_(Quote.superseded_at.is_(None), Quote.superseded_at > comp),
                 Quote.valid_until > comp,

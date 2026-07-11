@@ -119,6 +119,7 @@ Dev server: http://localhost:5173
 - Sprint 0 (PDR/RDC): [`docs/sprints/sprint-00.md`](docs/sprints/sprint-00.md)
 - Sprint 3 (cotações): [`docs/sprints/sprint-03.md`](docs/sprints/sprint-03.md)
 - Sprint 3.1 (estabilização): [`docs/sprints/sprint-03-1-stabilization.md`](docs/sprints/sprint-03-1-stabilization.md)
+- Sprint 13 (importação de cotações por IA — fundação): [`docs/sprints/sprint-13.md`](docs/sprints/sprint-13.md) · [`docs/quote-ai/`](docs/quote-ai/)
 - Regras de cotação: [`docs/business-rules/quotes.md`](docs/business-rules/quotes.md)
 - Padrão de sprints: [`docs/sprints/README.md`](docs/sprints/README.md)
 - BRIEF XPERT: [`docs/erp/xpert/CHECKLIST.md`](docs/erp/xpert/CHECKLIST.md)

@@ -48,3 +48,31 @@ app.include_router(api_router, prefix="/api/v1")
 @app.get("/health", response_model=HealthResponse, tags=["health"])
 async def health_root() -> HealthResponse:
     return HealthResponse(service=API_SERVICE_NAME, version=settings.app_version)
+
+
+@app.get("/health/live", response_model=HealthResponse, tags=["health"])
+async def health_live_root() -> HealthResponse:
+    return HealthResponse(service=API_SERVICE_NAME, version=settings.app_version)
+
+
+@app.get("/health/ready", tags=["health"])
+async def health_ready_root() -> dict:
+    from app.services.health import build_detailed_health
+
+    detailed = await build_detailed_health(settings.app_version)
+    ready = detailed.services.database.status == "healthy"
+    return {"status": "ready" if ready else "not_ready", "version": settings.app_version}
+
+
+@app.get("/health/dependencies", tags=["health"])
+async def health_dependencies_root() -> dict:
+    from app.services.health import build_detailed_health
+
+    detailed = await build_detailed_health(settings.app_version)
+    return {
+        "postgresql": detailed.services.database.status,
+        "redis": detailed.services.redis.status,
+        "minio": detailed.services.object_storage.status,
+        "xpert": "degraded/unsafe",
+        "overall": detailed.status,
+    }

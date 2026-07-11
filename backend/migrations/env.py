@@ -1,5 +1,6 @@
 """Alembic environment — Sprint 0 sem models de negócio."""
 
+import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -14,7 +15,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", settings.database_url_sync)
+# Prefer DATABASE_URL_SYNC from the process env (tests set this) over cached settings.
+config.set_main_option(
+    "sqlalchemy.url",
+    os.environ.get("DATABASE_URL_SYNC") or settings.database_url_sync,
+)
 
 
 def run_migrations_offline() -> None:

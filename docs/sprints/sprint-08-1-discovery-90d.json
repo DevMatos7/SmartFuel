@@ -1,0 +1,76 @@
+{
+  "period": {
+    "from": "2026-04-12",
+    "to": "2026-07-11",
+    "days": 90
+  },
+  "station_filter": null,
+  "pg_loaded_coverage": {
+    "searched_period": {
+      "from": "2026-04-12",
+      "to": "2026-07-11",
+      "days": 90
+    },
+    "first_purchase_day_pg": "2026-07-08",
+    "last_purchase_day_pg": "2026-07-09",
+    "days_with_purchases_pg": 2,
+    "invoices_pg_all": 4,
+    "interpretation": "A janela pesquisada NÃO implica que o PG contenha compras em todos esses dias. REAL_COMPARABLE_PURCHASES refere-se apenas aos dados disponíveis no PostgreSQL."
+  },
+  "groups_analyzed": 2,
+  "technically_comparable": 0,
+  "REAL_COMPARABLE_PURCHASES": 0,
+  "REAL_COMPARABLE_PURCHASES_SCOPE": "available_postgres_data_only",
+  "reason_counts": {
+    "UNMAPPED_PRODUCT": 2
+  },
+  "comparable_sample": [],
+  "rows": [
+    {
+      "purchase_invoice_id": "d0d1bbc6-29df-42ad-b3b0-40a9ed1a9989",
+      "document_number": "83471",
+      "station_id": "1edc5c8b-0ba1-405c-a000-03e61e31521e",
+      "entry_date": "2026-07-09",
+      "issue_date": "2026-07-09",
+      "reference_datetime": "2026-07-09T00:00:00+00:00",
+      "reference_source": "INVOICE_ISSUE_DATETIME",
+      "reference_confidence": "MEDIUM",
+      "canonical_product_id": null,
+      "product_name": null,
+      "fuel_family": null,
+      "volume_liters": "0",
+      "actual_cost_total": "497.4884",
+      "actual_cost_per_liter": null,
+      "actual_distributor_id": null,
+      "quotes_before_T": 0,
+      "eligible_candidates": 0,
+      "best_delivered_cost_per_liter": null,
+      "non_comparability_reason": "UNMAPPED_PRODUCT",
+      "group_key": "unmapped:1505",
+      "item_count": 1
+    },
+    {
+      "purchase_invoice_id": "d0d1bbc6-29df-42ad-b3b0-40a9ed1a9989",
+      "document_number": "83471",
+      "station_id": "1edc5c8b-0ba1-405c-a000-03e61e31521e",
+      "entry_date": "2026-07-09",
+      "issue_date": "2026-07-09",
+      "reference_datetime": "2026-07-09T00:00:00+00:00",
+      "reference_source": "INVOICE_ISSUE_DATETIME",
+      "reference_confidence": "MEDIUM",
+      "canonical_product_id": null,
+      "product_name": null,
+      "fuel_family": null,
+      "volume_liters": "0",
+      "actual_cost_total": "268.1400",
+      "actual_cost_per_liter": null,
+      "actual_distributor_id": null,
+      "quotes_before_T": 0,
+      "eligible_candidates": 0,
+      "best_delivered_cost_per_liter": null,
+      "non_comparability_reason": "UNMAPPED_PRODUCT",
+      "group_key": "unmapped:1506",
+      "item_count": 1
+    }
+  ]
+}

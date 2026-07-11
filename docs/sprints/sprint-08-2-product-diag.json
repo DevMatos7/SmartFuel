@@ -1,0 +1,134 @@
+{
+  "products_of_interest": [
+    "1505",
+    "1506"
+  ],
+  "xpert_cadastro": [
+    {
+      "erp_product_id": "1505",
+      "name": "ADITIVO FLEX 200ML BARDAHL",
+      "unit": "UN",
+      "ncm": "38119090",
+      "branch_id": "2443"
+    },
+    {
+      "erp_product_id": "1506",
+      "name": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+      "unit": "UN",
+      "ncm": "38249941",
+      "branch_id": "2443"
+    }
+  ],
+  "xpert_movements_90d": [
+    {
+      "erp_product_id": "1505",
+      "source_invoice_id": "2041821",
+      "entry_date": "2026-07-09",
+      "source_quantity": "24.000000",
+      "source_unit": "UN",
+      "product_name": "ADITIVO FLEX 200ML BARDAHL",
+      "unit_price": "27.52000046",
+      "item_total": "660.4800"
+    },
+    {
+      "erp_product_id": "1506",
+      "source_invoice_id": "2041821",
+      "entry_date": "2026-07-09",
+      "source_quantity": "24.000000",
+      "source_unit": "UN",
+      "product_name": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+      "unit_price": "14.83333302",
+      "item_total": "356.0000"
+    }
+  ],
+  "postgres": {
+    "erp_products": [
+      {
+        "erp_product_id": "1505",
+        "description": "ADITIVO FLEX 200ML BARDAHL",
+        "unit": null,
+        "mapping_status": "PENDING",
+        "canonical_product_id": null,
+        "canonical": null
+      },
+      {
+        "erp_product_id": "1506",
+        "description": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+        "unit": null,
+        "mapping_status": "PENDING",
+        "canonical_product_id": null,
+        "canonical": null
+      }
+    ],
+    "purchase_items": [
+      {
+        "id": "41d87560-915a-4398-a3af-82da85c38afd",
+        "source_invoice_id": "2041821",
+        "source_product_id": "1505",
+        "source_description": "ADITIVO FLEX 200ML BARDAHL",
+        "source_unit": "UN",
+        "source_quantity": "24.000000",
+        "volume_liters": null,
+        "commercial_delivered_cost": "497.4884",
+        "canonical_product_id": null,
+        "metric_eligibility_status": "EXCLUDED",
+        "metric_exclusion_reasons": [
+          "UNIT_CONVERSION_REQUIRED",
+          "UNMAPPED_PRODUCT"
+        ]
+      },
+      {
+        "id": "9f66b43b-ad25-4ca9-9570-d0c257b0113e",
+        "source_invoice_id": "2041821",
+        "source_product_id": "1506",
+        "source_description": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+        "source_unit": "UN",
+        "source_quantity": "24.000000",
+        "volume_liters": null,
+        "commercial_delivered_cost": "268.1400",
+        "canonical_product_id": null,
+        "metric_eligibility_status": "EXCLUDED",
+        "metric_exclusion_reasons": [
+          "UNIT_CONVERSION_REQUIRED",
+          "UNMAPPED_PRODUCT"
+        ]
+      }
+    ]
+  },
+  "volume_diagnosis_rules": {
+    "volume_liters_set_only_when_unit_in": [
+      "L",
+      "LT",
+      "LITRO",
+      "LITROS",
+      "LITER",
+      "LITERS"
+    ],
+    "empty_or_other_unit": "UNIT_CONVERSION_REQUIRED — volume_liters permanece NULL/0",
+    "do_not": "Estimar litros a partir do valor monetário",
+    "required_for_benchmark": [
+      "volume_liters > 0",
+      "conversion explícita válida (ainda sem fator cadastrado para UN)"
+    ]
+  },
+  "three_independent_blocks": [
+    {
+      "id": 1,
+      "name": "UNMAPPED_PRODUCT",
+      "status": "OPEN",
+      "detail": "1505/1506 sem canonical_product_id no PG"
+    },
+    {
+      "id": 2,
+      "name": "VOLUME_ZERO_OR_NULL",
+      "status": "OPEN",
+      "detail": "Unidade XPERT provavelmente não-litro (ex.: UN); conversão não inventada"
+    },
+    {
+      "id": 3,
+      "name": "NO_HISTORICAL_QUOTES",
+      "status": "OPEN",
+      "detail": "activated_quotes=0 no posto"
+    }
+  ]
+}

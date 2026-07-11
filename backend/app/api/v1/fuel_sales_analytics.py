@@ -19,11 +19,20 @@ from app.schemas.fuel_sales_analytics import (
     FuelSalesByStationRow,
     FuelSalesDataQualityResponse,
     FuelSalesFreshnessResponse,
+    FuelSalesMissingCostRow,
+    FuelSalesPriceVarianceRow,
+    FuelSalesQuarantinedRow,
+    FuelSalesRetailPriceRow,
     FuelSalesSummaryResponse,
     FuelSalesTrendPoint,
+    FuelSalesUnmappedRow,
+    ReconcileMappingsRequest,
+    ReconcileMappingsResponse,
 )
 from app.services.auth_service import AuthService, AuthenticatedUser
 from app.services.fuel_sales_analytics_service import FuelSalesAnalyticsService
+from app.services.sales_mapping_reconciliation_service import SalesMappingReconciliationService
+from app.utils.fuel_sales_export import build_fuel_sales_pdf
 
 router = APIRouter(prefix="/analytics/fuel-sales", tags=["fuel-sales-analytics"])
 
@@ -322,4 +331,225 @@ async def fuel_sales_export_csv(
         content=buffer.getvalue(),
         media_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="fuel-sales-by-product.csv"'},
+    )
+
+
+@router.get("/unmapped", response_model=list[FuelSalesUnmappedRow])
+async def fuel_sales_unmapped(
+    date_from: date = Query(...),
+    date_to: date = Query(...),
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> list[FuelSalesUnmappedRow]:
+    _ensure(user, Permission.FUEL_SALES_DATA_QUALITY_READ)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).list_unmapped(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+    )
+    return [
+        FuelSalesUnmappedRow(
+            erp_product_id=r["erp_product_id"],
+            erp_product_code=r.get("erp_product_code"),
+            erp_description=r["erp_description"],
+            item_count=r["item_count"],
+            volume_liters=_dec(r["volume_liters"]) or "0",
+            net_amount=_dec(r["net_amount"]) or "0",
+        )
+        for r in rows
+    ]
+
+
+@router.get("/missing-cost", response_model=list[FuelSalesMissingCostRow])
+async def fuel_sales_missing_cost(
+    date_from: date = Query(...),
+    date_to: date = Query(...),
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> list[FuelSalesMissingCostRow]:
+    _ensure(user, Permission.FUEL_SALES_DATA_QUALITY_READ)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).list_missing_cost(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+    )
+    return [
+        FuelSalesMissingCostRow(
+            product_id=r.get("product_id"),
+            product_name=r["product_name"],
+            item_count=r["item_count"],
+            volume_liters=_dec(r["volume_liters"]) or "0",
+            net_amount=_dec(r["net_amount"]) or "0",
+        )
+        for r in rows
+    ]
+
+
+@router.get("/quarantined", response_model=list[FuelSalesQuarantinedRow])
+async def fuel_sales_quarantined(
+    date_from: date = Query(...),
+    date_to: date = Query(...),
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> list[FuelSalesQuarantinedRow]:
+    _ensure(user, Permission.FUEL_SALES_DATA_QUALITY_READ)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).list_quarantined(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+    )
+    return [FuelSalesQuarantinedRow(reason=r["reason"], item_count=r["item_count"]) for r in rows]
+
+
+@router.get("/price-variance", response_model=list[FuelSalesPriceVarianceRow])
+async def fuel_sales_price_variance(
+    date_from: date = Query(...),
+    date_to: date = Query(...),
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> list[FuelSalesPriceVarianceRow]:
+    _ensure(user, Permission.FUEL_SALES_ANALYTICS_READ)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).price_variance(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        date_from=date_from,
+        date_to=date_to,
+    )
+    return [
+        FuelSalesPriceVarianceRow(
+            product_id=r["product_id"],
+            product_name=r["product_name"],
+            payment_method_group=r.get("payment_method_group"),
+            net_volume_liters=_dec(r["net_volume_liters"]) or "0",
+            realized_price_per_liter=_dec(r.get("realized_price_per_liter")),
+            registered_price_per_liter=_dec(r.get("registered_price_per_liter")),
+            variance_per_liter=_dec(r.get("variance_per_liter")),
+            variance_percent=_dec(r.get("variance_percent")),
+        )
+        for r in rows
+    ]
+
+
+@router.get("/retail-prices", response_model=list[FuelSalesRetailPriceRow])
+async def fuel_sales_retail_prices(
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    product_ids: list[uuid.UUID] | None = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> list[FuelSalesRetailPriceRow]:
+    _ensure(user, Permission.FUEL_SALES_ANALYTICS_READ)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).current_retail_prices(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        product_ids=product_ids,
+    )
+    return [
+        FuelSalesRetailPriceRow(
+            station_id=r["station_id"],
+            station_name=r["station_name"],
+            product_id=r.get("product_id"),
+            product_name=r["product_name"],
+            payment_method_group=r.get("payment_method_group"),
+            payment_method_name=r.get("payment_method_name"),
+            price_per_liter=_dec(r["price_per_liter"]) or "0",
+            observed_at=r["observed_at"],
+        )
+        for r in rows
+    ]
+
+
+@router.post("/reconcile-mappings", response_model=ReconcileMappingsResponse)
+async def fuel_sales_reconcile_mappings(
+    body: ReconcileMappingsRequest,
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> ReconcileMappingsResponse:
+    _ensure(user, Permission.FUEL_SALES_DATA_QUALITY_RECONCILE)
+    auth = AuthService(db)
+    scoped_stations = await _resolve_station_ids(auth, user, body.station_ids or None)
+    service = SalesMappingReconciliationService(db)
+    if body.erp_product_id:
+        run = await service.reconcile_for_erp_product(
+            organization_id=user.organization_id,
+            erp_product_id=body.erp_product_id,
+            requested_by=user.id,
+        )
+        runs = [run]
+    else:
+        runs = await service.reconcile_all_pending(
+            organization_id=user.organization_id,
+            station_ids=scoped_stations,
+            requested_by=user.id,
+        )
+    await db.commit()
+    return ReconcileMappingsResponse(
+        runs=[
+            {
+                "id": str(run.id),
+                "status": run.status,
+                "erp_product_id": str(run.erp_product_id) if run.erp_product_id else None,
+                "affected_facts": run.affected_facts,
+                "affected_dates": run.affected_dates,
+                "error_message": run.error_message,
+            }
+            for run in runs
+        ]
+    )
+
+
+@router.get("/export/pdf")
+async def fuel_sales_export_pdf(
+    date_from: date = Query(...),
+    date_to: date = Query(...),
+    station_ids: list[uuid.UUID] | None = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_current_active_user),
+) -> Response:
+    _ensure(user, Permission.FUEL_SALES_ANALYTICS_EXPORT)
+    auth = AuthService(db)
+    include_margin = Permission.FUEL_SALES_ANALYTICS_VIEW_MARGIN.value in user.permissions
+    scoped_stations = await _resolve_station_ids(auth, user, station_ids)
+    rows = await FuelSalesAnalyticsService(db).by_product(
+        organization_id=user.organization_id,
+        station_ids=scoped_stations,
+        product_ids=None,
+        date_from=date_from,
+        date_to=date_to,
+        payment_method_groups=None,
+        include_margin=include_margin,
+    )
+    pdf_bytes = build_fuel_sales_pdf(
+        title="Vendas de combustíveis — por produto",
+        generated_by=user.email or user.id.hex,
+        period_label=f"{date_from.isoformat()} a {date_to.isoformat()}",
+        rows=rows,
+        include_margin=include_margin,
+    )
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="fuel-sales-by-product.pdf"'},
     )

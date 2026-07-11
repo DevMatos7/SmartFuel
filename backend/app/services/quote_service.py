@@ -365,6 +365,8 @@ class QuoteService:
             valid_until=valid_until,
             source_channel=data["source_channel"],
             entry_method=data.get("entry_method", QuoteEntryMethod.MANUAL),
+            origin=data.get("origin", "MANUAL_OPERATIONAL"),
+            analytics_eligible=bool(data.get("analytics_eligible", True)),
             seller_name=data.get("seller_name"),
             seller_contact=data.get("seller_contact"),
             external_reference=data.get("external_reference"),

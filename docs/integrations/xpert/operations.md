@@ -33,3 +33,8 @@
 ## Reset de checkpoint
 
 Somente ADMIN, com motivo e confirmação. Reprocessa janela completa.
+
+## Precificação (Sprint 11)
+
+A formação de preço **não escreve** no XPERT. Preços aprovados são implantados externamente e conferidos via confirmação manual ou snapshot ERP posterior.
+

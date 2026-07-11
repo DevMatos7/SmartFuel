@@ -39,6 +39,56 @@ import { XpertSyncRunsPage } from "./pages/XpertSyncRunsPage";
 import { XpertSyncRunDetailsPage } from "./pages/XpertSyncRunDetailsPage";
 import { FuelSalesDashboardPage } from "./pages/FuelSalesDashboardPage";
 import { FuelSalesDataQualityPage } from "./pages/FuelSalesDataQualityPage";
+import { FuelMarginsPage } from "./pages/FuelMarginsPage";
+import { FuelPricesPage } from "./pages/FuelPricesPage";
+import { FuelPurchasesDashboardPage } from "./pages/FuelPurchasesDashboardPage";
+import { FuelPurchaseInvoicesPage } from "./pages/FuelPurchaseInvoicesPage";
+import { FuelPurchaseInvoiceDetailsPage } from "./pages/FuelPurchaseInvoiceDetailsPage";
+import { FuelPurchaseCostsPage } from "./pages/FuelPurchaseCostsPage";
+import { AccountsPayablePage } from "./pages/AccountsPayablePage";
+import { PurchaseDataQualityPage } from "./pages/PurchaseDataQualityPage";
+import { PurchaseBenchmarkDashboardPage } from "./pages/PurchaseBenchmarkDashboardPage";
+import { PurchaseBenchmarkDataQualityPage } from "./pages/PurchaseBenchmarkDataQualityPage";
+import { PurchaseBenchmarkOpportunitiesPage } from "./pages/PurchaseBenchmarkOpportunitiesPage";
+import { PurchaseBenchmarkRunDetailsPage } from "./pages/PurchaseBenchmarkRunDetailsPage";
+import { NfeDocumentsPage } from "./pages/NfeDocumentsPage";
+import { ExternalIndicesDashboardPage } from "./pages/ExternalIndicesDashboardPage";
+import { ExternalSeriesPage } from "./pages/ExternalSeriesPage";
+import { ExternalSeriesDetailsPage } from "./pages/ExternalSeriesDetailsPage";
+import { ExternalDataSourcesPage } from "./pages/ExternalDataSourcesPage";
+import { ExternalImportsPage } from "./pages/ExternalImportsPage";
+import { ExternalIngestionRunsPage } from "./pages/ExternalIngestionRunsPage";
+import { ExternalDataQualityPage } from "./pages/ExternalDataQualityPage";
+import { MarketCorrelationDashboardPage } from "./pages/MarketCorrelationDashboardPage";
+import { MarketAnalysisRunDetailsPage } from "./pages/MarketAnalysisRunDetailsPage";
+import { MarketAnalysisQualityPage } from "./pages/MarketAnalysisQualityPage";
+import { MarketAnalysisParametersPage } from "./pages/MarketAnalysisParametersPage";
+import { PricingDashboardPage } from "./pages/PricingDashboardPage";
+import { CurrentMarginsPage } from "./pages/CurrentMarginsPage";
+import { PricingRecommendationsPage } from "./pages/PricingRecommendationsPage";
+import { PricingRecommendationDetailsPage } from "./pages/PricingRecommendationDetailsPage";
+import { PricingApprovalQueuePage } from "./pages/PricingApprovalQueuePage";
+import { PricingDecisionDetailsPage } from "./pages/PricingDecisionDetailsPage";
+import { PricingImplementationsPage } from "./pages/PricingImplementationsPage";
+import { PricingPoliciesPage } from "./pages/PricingPoliciesPage";
+import { PricingDataQualityPage } from "./pages/PricingDataQualityPage";
+import { ExecutiveDashboardPage } from "./pages/ExecutiveDashboardPage";
+import { ExecutiveStationDetailsPage } from "./pages/ExecutiveStationDetailsPage";
+import { AlertsCenterPage } from "./pages/AlertsCenterPage";
+import { AlertDetailsPage } from "./pages/AlertDetailsPage";
+import { AlertRulesPage } from "./pages/AlertRulesPage";
+import { NotificationPoliciesPage } from "./pages/NotificationPoliciesPage";
+import { OperationsHealthPage } from "./pages/OperationsHealthPage";
+import { OperationalJobsPage } from "./pages/OperationalJobsPage";
+import { OperationalSloPage } from "./pages/OperationalSloPage";
+import { OperationalIncidentsPage } from "./pages/OperationalIncidentsPage";
+import { DataQualityOverviewPage } from "./pages/DataQualityOverviewPage";
+import { ProductionReadinessPage } from "./pages/ProductionReadinessPage";
+import { QuoteAiImportPage } from "./pages/QuoteAiImportPage";
+import { QuoteIngestionReviewPage } from "./pages/QuoteIngestionReviewPage";
+import { QuoteIngestionBatchesPage } from "./pages/QuoteIngestionBatchesPage";
+import { QuoteIngestionQualityPage } from "./pages/QuoteIngestionQualityPage";
+import { QuoteAiProviderSettingsPage } from "./pages/QuoteAiProviderSettingsPage";
 
 export default function App() {
   return (
@@ -225,6 +275,46 @@ export default function App() {
               }
             />
             <Route
+              path="quotes/ai"
+              element={
+                <RequirePermission permission="quote_ingestion.read">
+                  <QuoteAiImportPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/ai/batches"
+              element={
+                <RequirePermission permission="quote_ingestion.read">
+                  <QuoteIngestionBatchesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/ai/quality"
+              element={
+                <RequirePermission permission="quote_ingestion.read">
+                  <QuoteIngestionQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/ai/settings"
+              element={
+                <RequirePermission permission="quote_ingestion.manage_provider">
+                  <QuoteAiProviderSettingsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="quotes/ai/documents/:documentId"
+              element={
+                <RequirePermission permission="quote_ingestion.read">
+                  <QuoteIngestionReviewPage />
+                </RequirePermission>
+              }
+            />
+            <Route
               path="quote-comparisons"
               element={
                 <RequirePermission permission="quote_comparisons.run">
@@ -341,6 +431,366 @@ export default function App() {
               element={
                 <RequirePermission permission="fuel_sales_data_quality.read">
                   <FuelSalesDataQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-sales/margins"
+              element={
+                <RequirePermission permission="fuel_sales_analytics.view_margin">
+                  <FuelMarginsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-sales/prices"
+              element={
+                <RequirePermission permission="fuel_sales_analytics.read">
+                  <FuelPricesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-purchases"
+              element={
+                <RequirePermission permission="fuel_purchases.read">
+                  <FuelPurchasesDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/purchase-benchmarks"
+              element={
+                <RequirePermission permission="purchase_benchmarks.read">
+                  <PurchaseBenchmarkDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/purchase-benchmarks/opportunities"
+              element={
+                <RequirePermission permission="purchase_benchmarks.view_opportunity">
+                  <PurchaseBenchmarkOpportunitiesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/purchase-benchmarks/quality"
+              element={
+                <RequirePermission permission="purchase_benchmarks.read">
+                  <PurchaseBenchmarkDataQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/purchase-benchmarks/runs/:id"
+              element={
+                <RequirePermission permission="purchase_benchmarks.read">
+                  <PurchaseBenchmarkRunDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-purchases/invoices"
+              element={
+                <RequirePermission permission="purchase_invoices.read">
+                  <FuelPurchaseInvoicesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-purchases/invoices/:id"
+              element={
+                <RequirePermission permission="purchase_invoices.read">
+                  <FuelPurchaseInvoiceDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-purchases/costs"
+              element={
+                <RequirePermission permission="fuel_purchases.view_cost">
+                  <FuelPurchaseCostsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/fuel-purchases/quality"
+              element={
+                <RequirePermission permission="purchase_data_quality.read">
+                  <PurchaseDataQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/accounts-payable"
+              element={
+                <RequirePermission permission="accounts_payable.read">
+                  <AccountsPayablePage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/nfe-documents"
+              element={
+                <RequirePermission permission="nfe_documents.read">
+                  <NfeDocumentsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalIndicesDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/series"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalSeriesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/series/:id"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalSeriesDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/sources"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalDataSourcesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/imports"
+              element={
+                <RequirePermission permission="external_data.import">
+                  <ExternalImportsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/runs"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalIngestionRunsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/external-indices/quality"
+              element={
+                <RequirePermission permission="external_data.read">
+                  <ExternalDataQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/market-correlation"
+              element={
+                <RequirePermission permission="market_analysis.read">
+                  <MarketCorrelationDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/market-correlation/runs/:id"
+              element={
+                <RequirePermission permission="market_analysis.read">
+                  <MarketAnalysisRunDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/market-correlation/quality"
+              element={
+                <RequirePermission permission="market_analysis.read">
+                  <MarketAnalysisQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="analytics/market-correlation/parameters"
+              element={
+                <RequirePermission permission="market_analysis.read">
+                  <MarketAnalysisParametersPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/margins"
+              element={
+                <RequirePermission permission="pricing.view_margin">
+                  <CurrentMarginsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/recommendations"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingRecommendationsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/recommendations/:id"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingRecommendationDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/approvals"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingApprovalQueuePage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/decisions/:id"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingDecisionDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/implementations"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingImplementationsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/policies"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingPoliciesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="pricing/quality"
+              element={
+                <RequirePermission permission="pricing.read">
+                  <PricingDataQualityPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive"
+              element={
+                <RequirePermission permission="executive_dashboard.read">
+                  <ExecutiveDashboardPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/stations"
+              element={
+                <RequirePermission permission="executive_dashboard.read">
+                  <ExecutiveStationDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/alerts"
+              element={
+                <RequirePermission permission="alerts.read">
+                  <AlertsCenterPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/alerts/:id"
+              element={
+                <RequirePermission permission="alerts.read">
+                  <AlertDetailsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/alert-rules"
+              element={
+                <RequirePermission permission="alerts.read">
+                  <AlertRulesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/notifications"
+              element={
+                <RequirePermission permission="alerts.read">
+                  <NotificationPoliciesPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/health"
+              element={
+                <RequirePermission permission="operations.read_health">
+                  <OperationsHealthPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/jobs"
+              element={
+                <RequirePermission permission="operations.read_jobs">
+                  <OperationalJobsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/slo"
+              element={
+                <RequirePermission permission="operations.read_slo">
+                  <OperationalSloPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/incidents"
+              element={
+                <RequirePermission permission="operations.manage_incidents">
+                  <OperationalIncidentsPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/quality"
+              element={
+                <RequirePermission permission="executive_dashboard.read">
+                  <DataQualityOverviewPage />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="executive/readiness"
+              element={
+                <RequirePermission permission="operations.view_readiness">
+                  <ProductionReadinessPage />
                 </RequirePermission>
               }
             />

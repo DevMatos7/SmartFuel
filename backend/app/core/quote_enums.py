@@ -23,6 +23,14 @@ class QuoteEntryMethod(StrEnum):
     API = "API"
 
 
+class QuoteOrigin(StrEnum):
+    MANUAL_OPERATIONAL = "MANUAL_OPERATIONAL"
+    SYNTHETIC_TEST = "SYNTHETIC_TEST"
+    LEGACY_DOCUMENTED_IMPORT = "LEGACY_DOCUMENTED_IMPORT"
+    API_IMPORT = "API_IMPORT"
+    AI_ASSISTED_INGESTION = "AI_ASSISTED_INGESTION"
+
+
 class FreightType(StrEnum):
     CIF = "CIF"
     FOB = "FOB"

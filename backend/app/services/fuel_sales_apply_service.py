@@ -8,6 +8,12 @@ from decimal import Decimal, InvalidOperation
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cfop_policy import (
+    CfopAnalyticsScope,
+    CfopPolicy,
+    CfopTreatment,
+    get_cfop_policy,
+)
 from app.core.fuel_sales_enums import (
     CostSource,
     FuelOperationType,
@@ -24,6 +30,8 @@ from app.integrations.xpert.normalizers import hash_payload_for_dataset, parse_s
 from app.models.erp_integration import ErpStagingRecord, ErpSyncRun
 from app.models.erp_product import ErpProduct
 from app.models.fuel_sales import ErpPaymentMethod, FuelRetailPriceSnapshot, FuelSalesFact
+from app.models.product import Product
+from app.seeds.master_data import VALID_FUEL_FAMILIES
 from app.services.fuel_sales_calculation_service import (
     compute_margin,
     compute_net_amount,
@@ -32,6 +40,24 @@ from app.services.fuel_sales_calculation_service import (
 )
 
 LITER_UNITS = {"l", "lt", "litro", "litros", "liter", "liters"}
+ML_UNITS = {"ml", "mililitro", "mililitros", "milliliter", "milliliters"}
+COUNT_UNITS = {
+    "un",
+    "und",
+    "unidade",
+    "unidades",
+    "pc",
+    "pç",
+    "peca",
+    "peça",
+    "pcs",
+    "cx",
+    "caixa",
+    "caixas",
+    "kit",
+    "frasco",
+    "fs",
+}
 
 
 @dataclass
@@ -180,9 +206,8 @@ class FuelSalesApplyService:
             return "error"
 
         erp_product = await self._load_erp_product(run.station_id, source_product_id)
-        if erp_product is None:
-            staging.processing_status = ErpStagingStatus.ERROR
-            return "error"
+        # Produto ausente no mestre: aplica fato órfão (não bloqueia a janela).
+        missing_erp_product = erp_product is None
 
         record_hash = staging.record_hash or canonical_record_hash(
             hash_payload_for_dataset(ErpDatasetCode.FUEL_SALES_ITEMS, normalized)
@@ -215,6 +240,14 @@ class FuelSalesApplyService:
                 erp_payment_method_id = pm.id
                 payment_method_group = pm.normalized_group if pm.mapping_status == MappingStatus.MAPPED else None
 
+        canonical_product: Product | None = None
+        if (
+            erp_product is not None
+            and erp_product.mapping_status == MappingStatus.MAPPED
+            and erp_product.canonical_product_id
+        ):
+            canonical_product = await self.db.get(Product, erp_product.canonical_product_id)
+
         fact_fields = self._build_sales_fact_fields(
             run=run,
             normalized=normalized,
@@ -224,6 +257,8 @@ class FuelSalesApplyService:
             now=now,
             erp_payment_method_id=erp_payment_method_id,
             payment_method_group=payment_method_group,
+            canonical_product=canonical_product,
+            missing_erp_product=missing_erp_product,
         )
 
         if existing is None:
@@ -272,21 +307,30 @@ class FuelSalesApplyService:
         *,
         run: ErpSyncRun,
         normalized: dict,
-        erp_product: ErpProduct,
+        erp_product: ErpProduct | None,
         staging: ErpStagingRecord,
         record_hash: str,
         now: datetime,
         erp_payment_method_id: uuid.UUID | None,
         payment_method_group: str | None,
+        canonical_product: Product | None = None,
+        missing_erp_product: bool = False,
     ) -> dict:
         is_cancelled = bool(normalized.get("source_cancelled"))
         operation_type = normalized.get("source_operation_type") or FuelOperationType.SALE
         sold_at = parse_source_datetime(normalized.get("source_sale_datetime")) or now
         business_date = _parse_business_date(normalized.get("source_business_date")) or sold_at.date()
 
+        source_cfop = normalized.get("source_cfop")
+        cfop_policy = get_cfop_policy(source_cfop)
+
         quantity = _to_decimal(normalized.get("source_quantity"))
         unit = (normalized.get("source_unit") or "").strip().lower() or None
-        volume_liters, volume_reason = _resolve_volume_liters(quantity, unit)
+        volume_liters, volume_reason = _resolve_volume_liters(
+            quantity,
+            unit,
+            analytics_scope=cfop_policy.default_analytics_scope,
+        )
 
         gross = _to_decimal(normalized.get("source_gross_amount"))
         discount = _to_decimal(normalized.get("source_discount_amount"))
@@ -313,6 +357,7 @@ class FuelSalesApplyService:
         )
 
         source_pm_id = normalized.get("source_payment_method_id")
+        is_fuel_product = _is_fuel_canonical_product(canonical_product)
 
         eligibility, reasons = _compute_eligibility(
             is_cancelled=is_cancelled,
@@ -325,6 +370,10 @@ class FuelSalesApplyService:
             source_payment_method_id=source_pm_id,
             margin_status=margin["margin_status"],
             gross_margin_amount=margin.get("gross_margin_amount"),
+            cfop_policy=cfop_policy,
+            operation_type=operation_type,
+            is_fuel_product=is_fuel_product,
+            missing_erp_product=missing_erp_product,
         )
 
         if (
@@ -338,7 +387,7 @@ class FuelSalesApplyService:
             reasons.append(MetricExclusionReason.NEGATIVE_GROSS_MARGIN)
 
         canonical_product_id = None
-        if erp_product.mapping_status == MappingStatus.MAPPED:
+        if erp_product is not None and erp_product.mapping_status == MappingStatus.MAPPED:
             canonical_product_id = erp_product.canonical_product_id
 
         return {
@@ -349,7 +398,8 @@ class FuelSalesApplyService:
             "source_document_number": normalized.get("source_document_number"),
             "sold_at_utc": sold_at,
             "business_date": business_date,
-            "erp_product_id": erp_product.id,
+            "source_product_id": normalized.get("source_product_id"),
+            "erp_product_id": erp_product.id if erp_product is not None else None,
             "canonical_product_id": canonical_product_id,
             "erp_payment_method_id": erp_payment_method_id,
             "payment_method_group": payment_method_group,
@@ -373,6 +423,8 @@ class FuelSalesApplyService:
             "gross_margin_percent": margin.get("gross_margin_percent"),
             "metric_eligibility_status": eligibility,
             "metric_exclusion_reasons": [r.value if hasattr(r, "value") else r for r in reasons] or None,
+            "source_cfop": source_cfop,
+            "cfop_classification": cfop_policy.treatment.value,
             "source_record_hash": record_hash,
             "source_updated_at": staging.source_updated_at,
             "last_sync_run_id": run.id,
@@ -572,18 +624,44 @@ def _parse_business_date(value) -> date | None:
         return None
 
 
-def _resolve_volume_liters(quantity: Decimal | None, unit: str | None) -> tuple[Decimal | None, str | None]:
+def _is_fuel_canonical_product(product: Product | None) -> bool:
+    if product is None:
+        return False
+    if product.fuel_family not in VALID_FUEL_FAMILIES:
+        return False
+    unit = (product.unit or "").strip().upper()
+    return unit in {"L", "LT", "LITER", "LITERS", "LITRO", "LITROS"}
+
+
+def _resolve_volume_liters(
+    quantity: Decimal | None,
+    unit: str | None,
+    *,
+    analytics_scope: str | None = None,
+) -> tuple[Decimal | None, str | None]:
     if quantity is None:
         return None, MetricExclusionReason.INVALID_VOLUME
-    if unit is None or unit in LITER_UNITS:
+
+    normalized_unit = (unit or "").strip().lower() or None
+
+    if normalized_unit in LITER_UNITS:
         return quantity, None
+    if normalized_unit in ML_UNITS:
+        return quantity / Decimal("1000"), None
+    if normalized_unit in COUNT_UNITS:
+        return None, MetricExclusionReason.UNIT_CONVERSION_REQUIRED
+
+    # XPERT frequentemente omite unidade nas bombas: só assume litro para CFOP candidato a combustível.
+    if normalized_unit is None and analytics_scope == CfopAnalyticsScope.FUEL_CANDIDATE:
+        return quantity, None
+
     return None, MetricExclusionReason.UNIT_CONVERSION_REQUIRED
 
 
 def _compute_eligibility(
     *,
     is_cancelled: bool,
-    erp_product: ErpProduct,
+    erp_product: ErpProduct | None,
     volume_liters: Decimal | None,
     volume_reason: str | None,
     net_amount: Decimal | None,
@@ -592,14 +670,41 @@ def _compute_eligibility(
     source_payment_method_id: str | None,
     margin_status: str,
     gross_margin_amount: Decimal | None,
+    cfop_policy: CfopPolicy,
+    operation_type: str,
+    is_fuel_product: bool = False,
+    missing_erp_product: bool = False,
 ) -> tuple[str, list]:
+    """Elegibilidade para KPIs de combustível: CFOP venda válida × produto combustível × volume válido."""
     reasons: list = []
     if is_cancelled:
         return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.CANCELLED_SALE]
+    if cfop_policy.requires_pending_review:
+        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.PENDING_CFOP_CLASSIFICATION]
+    if cfop_policy.treatment == CfopTreatment.EXCLUDE_NON_COMMERCIAL:
+        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.PENDING_CFOP_CLASSIFICATION]
+    if missing_erp_product or erp_product is None:
+        orphan_reasons = [MetricExclusionReason.MISSING_ERP_PRODUCT_REFERENCE]
+        if cfop_policy.is_non_fuel_by_default:
+            orphan_reasons.append(MetricExclusionReason.EXCLUDED_NON_FUEL_PRODUCT)
+        return MetricEligibilityStatus.EXCLUDED, orphan_reasons
     if erp_product.mapping_status == MappingStatus.IGNORED:
         return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.IGNORED_PRODUCT]
     if erp_product.mapping_status != MappingStatus.MAPPED:
-        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.UNMAPPED_PRODUCT]
+        unmapped_reasons = [MetricExclusionReason.UNMAPPED_PRODUCT]
+        if cfop_policy.is_non_fuel_by_default:
+            unmapped_reasons.append(MetricExclusionReason.EXCLUDED_NON_FUEL_PRODUCT)
+        return MetricEligibilityStatus.EXCLUDED, unmapped_reasons
+    if cfop_policy.treatment == CfopTreatment.INCLUDE_AS_RETURN or operation_type == FuelOperationType.RETURN:
+        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.RETURN_ITEM]
+
+    # Venda geral (5.102/5.405) ou produto fora do grupo combustível: preserva fato, fora do dashboard.
+    if cfop_policy.is_non_fuel_by_default or not is_fuel_product:
+        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.EXCLUDED_NON_FUEL_PRODUCT]
+
+    if not cfop_policy.is_sale or not cfop_policy.is_fuel_candidate:
+        return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.EXCLUDED_NON_FUEL_PRODUCT]
+
     if volume_reason == MetricExclusionReason.UNIT_CONVERSION_REQUIRED:
         return MetricEligibilityStatus.EXCLUDED, [MetricExclusionReason.UNIT_CONVERSION_REQUIRED]
     if volume_liters is None or volume_liters <= 0:

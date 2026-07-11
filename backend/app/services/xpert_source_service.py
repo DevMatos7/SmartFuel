@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, time, timedelta
 from typing import Any
 
 from sqlalchemy import func, select
@@ -10,7 +10,14 @@ from sqlalchemy.orm import selectinload
 
 from app.core.config import settings
 from app.core.exceptions import AppError
-from app.core.config import settings
+from app.core.fuel_sales_normalization import (
+    FUEL_SALES_HASH_SCHEMA_VERSION,
+    FUEL_SALES_NORMALIZATION_VERSION,
+)
+from app.core.fuel_purchases_normalization import (
+    FUEL_PURCHASE_HASH_SCHEMA_VERSION,
+    FUEL_PURCHASE_NORMALIZATION_VERSION,
+)
 from app.core.xpert_sync_enums import (
     ErpConnectionStatus,
     ErpContractStatus,
@@ -32,6 +39,7 @@ from app.models.erp_integration import ErpDataset, ErpSource, ErpSyncRun
 from app.models.station import Station
 from app.services.audit_service import AuditContext, AuditService
 from app.services.xpert_worker_service import XpertWorkerService
+from app.services.xpert_checkpoint_service import XpertCheckpointService
 
 DEFAULT_DATASETS = (
     {
@@ -77,15 +85,127 @@ DEFAULT_DATASETS = (
         "sync_mode": ErpSyncMode.FULL_SNAPSHOT_HASH,
         "checkpoint_type": "NONE",
     },
+    {
+        "code": ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+        "name": "Notas de entrada de combustível",
+        "query_file": "fuel_purchase_invoices.sql",
+        "sync_mode": ErpSyncMode.INCREMENTAL_TIMESTAMP,
+        "checkpoint_type": "TIMESTAMP",
+        "overlap_seconds": 86400,
+    },
+    {
+        "code": ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+        "name": "Itens de compra de combustível",
+        "query_file": "fuel_purchase_items.sql",
+        "sync_mode": ErpSyncMode.INCREMENTAL_TIMESTAMP,
+        "checkpoint_type": "TIMESTAMP",
+        "overlap_seconds": 86400,
+    },
+    {
+        "code": ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+        "name": "Títulos a pagar",
+        "query_file": "accounts_payable_titles.sql",
+        "sync_mode": ErpSyncMode.INCREMENTAL_TIMESTAMP,
+        "checkpoint_type": "TIMESTAMP",
+        "overlap_seconds": 86400,
+    },
 )
 
 _MISCONFIGURED_UNTIL_REAL_SQL = frozenset({
     ErpDatasetCode.STATIONS,
-    ErpDatasetCode.PAYMENT_METHODS,
+    ErpDatasetCode.FUEL_SALE_PAYMENTS,
+    ErpDatasetCode.NFE_XML_DOCUMENTS,
+})
+
+_PURCHASE_HISTORY_DATASETS = frozenset({
+    ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+    ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+    ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+})
+
+_STATION_REQUIRED_DATASETS = frozenset({
     ErpDatasetCode.FUEL_SALES_ITEMS,
     ErpDatasetCode.FUEL_RETAIL_PRICES,
-    ErpDatasetCode.FUEL_SALE_PAYMENTS,
+    ErpDatasetCode.PRODUCTS,
+    ErpDatasetCode.SUPPLIERS,
+    ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+    ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+    ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
 })
+
+_BRANCH_ISOLATION_DATASETS = frozenset({
+    ErpDatasetCode.FUEL_SALES_ITEMS,
+    ErpDatasetCode.FUEL_RETAIL_PRICES,
+    ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+    ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+    ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+})
+
+
+def _probe_parameters(
+    *,
+    dataset_code: str,
+    station: Station | None,
+    probe_days: int = 1,
+) -> dict[str, Any]:
+    params: dict[str, Any] = {}
+    if station and station.erp_branch_id:
+        params["station_erp_id"] = station.erp_branch_id
+    if dataset_code in (
+        ErpDatasetCode.FUEL_SALES_ITEMS,
+        ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+        ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+        ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+    ):
+        now = datetime.now(UTC)
+        params["window_start"] = now - timedelta(days=probe_days)
+        params["window_end"] = now
+    return params
+
+
+def _validate_branch_isolation(
+    *,
+    dataset_code: str,
+    rows: list[dict[str, Any]],
+    expected_branch_id: str,
+) -> list[str]:
+    if dataset_code not in _BRANCH_ISOLATION_DATASETS:
+        return []
+    errors: list[str] = []
+    foreign: set[str] = set()
+    for row in rows:
+        branch = row.get("source_branch_id")
+        if branch is None:
+            continue
+        branch_str = str(branch).strip()
+        if branch_str != str(expected_branch_id).strip():
+            foreign.add(branch_str)
+    if foreign:
+        errors.append(
+            f"Vazamento de filial detectado: esperado {expected_branch_id}, encontrado {sorted(foreign)}"
+        )
+    return errors
+
+
+def _validate_natural_key_duplicates(
+    *,
+    dataset_code: str,
+    rows: list[dict[str, Any]],
+) -> list[str]:
+    if dataset_code != ErpDatasetCode.FUEL_SALES_ITEMS:
+        return []
+    seen: set[tuple[str, str]] = set()
+    duplicates: list[str] = []
+    for row in rows:
+        sale_id = str(row.get("source_sale_id", ""))
+        item_id = str(row.get("source_sale_item_id", ""))
+        key = (sale_id, item_id)
+        if key in seen:
+            duplicates.append(f"{sale_id}:{item_id}")
+        seen.add(key)
+    if duplicates:
+        return [f"Chave natural duplicada na amostra: {duplicates[:5]}"]
+    return []
 
 
 class XpertSourceService:
@@ -254,13 +374,50 @@ class XpertSourceService:
 
         sql = load_query_file(dataset.query_file)
         dataset.query_hash = file_validation["query_hash"]
-        params: dict[str, Any] = {}
-        if station and station.erp_branch_id:
-            params["station_erp_id"] = station.erp_branch_id
+
+        if dataset.code in _STATION_REQUIRED_DATASETS:
+            if station is None:
+                raise AppError(
+                    "station_id é obrigatório para validar este dataset (fail closed).",
+                    status_code=400,
+                    code="XPERT_STATION_REQUIRED",
+                )
+            if not station.erp_branch_id:
+                raise AppError(
+                    "Posto sem erp_branch_id configurado.",
+                    status_code=400,
+                    code="XPERT_STATION_BRANCH_MISSING",
+                )
+
+        params = _probe_parameters(dataset_code=dataset.code, station=station, probe_days=1)
+        if dataset.code in _STATION_REQUIRED_DATASETS and "station_erp_id" not in params:
+            raise AppError(
+                "Parâmetro @station_erp_id ausente (fail closed).",
+                status_code=400,
+                code="XPERT_STATION_PARAMETER_MISSING",
+            )
 
         ds = create_datasource(source, fake=datasource)
+        isolation_rows: list[dict[str, Any]] = []
         try:
             probe = ds.probe_contract(sql, params, limit=5)
+            if dataset.code in _BRANCH_ISOLATION_DATASETS:
+                for batch in ds.stream_rows(sql, params, batch_size=500):
+                    isolation_rows.extend(batch)
+                    if len(isolation_rows) >= 500:
+                        isolation_rows = isolation_rows[:500]
+                        break
+            else:
+                isolation_rows = list(probe.sample_rows)
+        except KeyError as exc:
+            dataset.contract_status = ErpContractStatus.INVALID
+            dataset.contract_result = {"error": str(exc)[:500]}
+            dataset.last_contract_validation_at = datetime.now(UTC)
+            raise AppError(
+                "Parâmetro obrigatório ausente na execução da query.",
+                status_code=400,
+                code="XPERT_QUERY_PARAMETER_MISSING",
+            ) from exc
         except Exception as exc:
             dataset.contract_status = ErpContractStatus.INVALID
             dataset.contract_result = {"error": str(exc)[:500]}
@@ -274,22 +431,47 @@ class XpertSourceService:
             ds.close()
 
         contract = validate_contract(dataset.code, probe.columns)
+        isolation_errors: list[str] = []
+        if station and station.erp_branch_id:
+            isolation_errors.extend(
+                _validate_branch_isolation(
+                    dataset_code=dataset.code,
+                    rows=isolation_rows,
+                    expected_branch_id=station.erp_branch_id,
+                )
+            )
+        isolation_errors.extend(
+            _validate_natural_key_duplicates(dataset_code=dataset.code, rows=isolation_rows)
+        )
         result = {
-            "valid": contract.valid,
+            "valid": contract.valid and not isolation_errors,
             "missing_columns": contract.missing_columns,
             "extra_columns": contract.extra_columns,
             "found_columns": contract.found_columns,
             "query_hash": dataset.query_hash,
             "sample_count": probe.row_count,
+            "isolation_sample_size": len(isolation_rows),
+            "isolation_errors": isolation_errors,
+            "distinct_branch_ids": sorted(
+                {str(r.get("source_branch_id")) for r in isolation_rows if r.get("source_branch_id") is not None}
+            ),
         }
         dataset.contract_result = result
         dataset.last_contract_validation_at = datetime.now(UTC)
-        dataset.contract_status = ErpContractStatus.VALID if contract.valid else ErpContractStatus.INVALID
+        dataset.contract_status = (
+            ErpContractStatus.VALID if contract.valid and not isolation_errors else ErpContractStatus.INVALID
+        )
         if not contract.valid:
             raise AppError(
                 "A consulta não retornou as colunas obrigatórias.",
                 status_code=400,
                 code="XPERT_DATASET_CONTRACT_INVALID",
+            )
+        if isolation_errors:
+            raise AppError(
+                isolation_errors[0],
+                status_code=400,
+                code="XPERT_BRANCH_ISOLATION_FAILED",
             )
         await self.audit.log(
             ctx=audit_ctx,
@@ -313,6 +495,8 @@ class XpertSourceService:
         retried_from_run_id: uuid.UUID | None = None,
         unsafe_homologation_acknowledged: bool = False,
         audit_ctx: AuditContext | None = None,
+        history_start_date: date | None = None,
+        history_end_date: date | None = None,
     ) -> list[ErpSyncRun]:
         datasets = {d.code: d for d in source.datasets}
         runs: list[ErpSyncRun] = []
@@ -331,6 +515,8 @@ class XpertSourceService:
                     dataset=dataset,
                     station_id=station_id,
                     sync_mode=sync_mode,
+                    history_start_date=history_start_date,
+                    history_end_date=history_end_date,
                 )
                 active = await self._has_active_run(source.id, dataset.id, station_id)
                 if active:
@@ -352,6 +538,27 @@ class XpertSourceService:
                     retried_from_run_id=retried_from_run_id,
                     created_at=datetime.now(UTC),
                 )
+                if (
+                    dataset.code
+                    in (
+                        ErpDatasetCode.FUEL_SALES_ITEMS,
+                        *_PURCHASE_HISTORY_DATASETS,
+                    )
+                    and history_start_date is not None
+                ):
+                    run.window_start = datetime.combine(history_start_date, time.min, tzinfo=UTC)
+                if history_end_date is not None:
+                    run.window_end = datetime.combine(
+                        history_end_date + timedelta(days=1),
+                        time.min,
+                        tzinfo=UTC,
+                    )
+                if dataset.code == ErpDatasetCode.FUEL_SALES_ITEMS:
+                    run.normalization_version = FUEL_SALES_NORMALIZATION_VERSION
+                    run.hash_schema_version = FUEL_SALES_HASH_SCHEMA_VERSION
+                if dataset.code in _PURCHASE_HISTORY_DATASETS:
+                    run.normalization_version = FUEL_PURCHASE_NORMALIZATION_VERSION
+                    run.hash_schema_version = FUEL_PURCHASE_HASH_SCHEMA_VERSION
                 self.db.add(run)
                 runs.append(run)
         await self.db.flush()
@@ -428,6 +635,8 @@ class XpertSourceService:
         dataset: ErpDataset,
         station_id: uuid.UUID,
         sync_mode: str,
+        history_start_date: date | None = None,
+        history_end_date: date | None = None,
     ) -> None:
         if dataset.code == ErpDatasetCode.STATIONS:
             raise AppError(
@@ -458,7 +667,15 @@ class XpertSourceService:
                 status_code=400,
                 code="XPERT_SOURCE_DISCONNECTED",
             )
-        if dataset.code in (ErpDatasetCode.PRODUCTS, ErpDatasetCode.SUPPLIERS):
+        if dataset.code in (
+            ErpDatasetCode.PRODUCTS,
+            ErpDatasetCode.SUPPLIERS,
+            ErpDatasetCode.FUEL_SALES_ITEMS,
+            ErpDatasetCode.FUEL_RETAIL_PRICES,
+            ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+            ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+            ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+        ):
             station = await self.db.get(Station, station_id)
             if station is None or not station.erp_branch_id:
                 raise AppError(
@@ -468,6 +685,23 @@ class XpertSourceService:
                 )
         incremental_modes = {ErpSyncMode.INCREMENTAL_TIMESTAMP, ErpSyncMode.INCREMENTAL_ID}
         if sync_mode in incremental_modes:
+            if dataset.code in (
+                ErpDatasetCode.FUEL_SALES_ITEMS,
+                *_PURCHASE_HISTORY_DATASETS,
+            ):
+                checkpoint_service = XpertCheckpointService(self.db)
+                checkpoint = await checkpoint_service.get_or_create(
+                    source=source, dataset=dataset, station_id=station_id
+                )
+                if not checkpoint.watermark_value and (
+                    history_start_date is None or history_end_date is None
+                ):
+                    raise AppError(
+                        "A primeira carga exige history_start_date e history_end_date.",
+                        status_code=400,
+                        code="HISTORY_WINDOW_REQUIRED",
+                    )
+                return
             has_full = await self.has_completed_full_run(
                 dataset_id=dataset.id, station_id=station_id
             )
@@ -585,6 +819,48 @@ class XpertSourceService:
                 )
             )
         await self.db.flush()
+
+    async def ensure_missing_datasets(self, source: ErpSource) -> list[str]:
+        """Provisiona datasets DEFAULT ausentes (ex.: fonte criada antes da Sprint 6)."""
+        existing = {dataset.code for dataset in source.datasets}
+        created: list[str] = []
+        for item in DEFAULT_DATASETS:
+            if item["code"] in existing:
+                continue
+            query_file = item["query_file"]
+            try:
+                sql = load_query_file(query_file)
+                q_hash = query_file_hash(sql)
+                file_ok = validate_query_file(query_file)["valid"]
+            except FileNotFoundError:
+                q_hash = None
+                file_ok = False
+            if item["code"] in _MISCONFIGURED_UNTIL_REAL_SQL:
+                contract_status = ErpContractStatus.MISCONFIGURED
+            elif file_ok:
+                contract_status = ErpContractStatus.PENDING
+            else:
+                contract_status = ErpContractStatus.MISCONFIGURED
+            overlap = item.get("overlap_seconds", settings.xpert_sync_default_overlap_seconds)
+            self.db.add(
+                ErpDataset(
+                    erp_source_id=source.id,
+                    code=item["code"],
+                    name=item["name"],
+                    query_file=query_file,
+                    query_hash=q_hash,
+                    sync_mode=item["sync_mode"],
+                    checkpoint_type=item["checkpoint_type"],
+                    overlap_seconds=overlap,
+                    batch_size=settings.xpert_sync_default_batch_size,
+                    contract_status=contract_status,
+                    enabled=False,
+                )
+            )
+            created.append(item["code"])
+        if created:
+            await self.db.flush()
+        return created
 
     async def _has_active_run(
         self, source_id: uuid.UUID, dataset_id: uuid.UUID, station_id: uuid.UUID

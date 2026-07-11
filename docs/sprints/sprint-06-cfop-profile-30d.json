@@ -1,0 +1,100 @@
+﻿{
+  "mode": "READ_ONLY",
+  "branch": "2443",
+  "from": "2026-06-10",
+  "to": "2026-07-09",
+  "total_cfops": 4,
+  "pending_review_active_items": 26,
+  "cfops": [
+    {
+      "cfop": "5.102",
+      "policy": "PENDING_REVIEW",
+      "items_total": 26,
+      "items_cancelled": 1,
+      "items_active": 25,
+      "volume_total": "26.000000",
+      "volume_active": "25.000000",
+      "net_total": "1479.4000",
+      "net_active": "1392.5000",
+      "product_count": 7,
+      "products_sample": [
+        "1136",
+        "1138",
+        "1391",
+        "1505",
+        "1507",
+        "1509",
+        "54"
+      ],
+      "first_day": "2026-06-10",
+      "last_day": "2026-07-08",
+      "day_count": 17
+    },
+    {
+      "cfop": "5.405",
+      "policy": "PENDING_REVIEW",
+      "items_total": 1,
+      "items_cancelled": 0,
+      "items_active": 1,
+      "volume_total": "1.000000",
+      "volume_active": "1.000000",
+      "net_total": "12.9000",
+      "net_active": "12.9000",
+      "product_count": 1,
+      "products_sample": [
+        "1354"
+      ],
+      "first_day": "2026-06-12",
+      "last_day": "2026-06-12",
+      "day_count": 1
+    },
+    {
+      "cfop": "5.656",
+      "policy": "INCLUDE_AS_SALE",
+      "items_total": 7410,
+      "items_cancelled": 67,
+      "items_active": 7343,
+      "volume_total": "163860.744501",
+      "volume_active": "160214.113497",
+      "net_total": "1000641.1802",
+      "net_active": "976268.4702",
+      "product_count": 16,
+      "products_sample": [
+        "1",
+        "1151",
+        "1271",
+        "1272",
+        "1276",
+        "1278",
+        "1279",
+        "1284",
+        "1286",
+        "1287"
+      ],
+      "first_day": "2026-06-10",
+      "last_day": "2026-07-09",
+      "day_count": 30
+    },
+    {
+      "cfop": "5.667",
+      "policy": "INCLUDE_AS_SALE",
+      "items_total": 19,
+      "items_cancelled": 1,
+      "items_active": 18,
+      "volume_total": "682.769995",
+      "volume_active": "622.759997",
+      "net_total": "4605.8200",
+      "net_active": "4170.1500",
+      "product_count": 4,
+      "products_sample": [
+        "1",
+        "1271",
+        "2",
+        "4"
+      ],
+      "first_day": "2026-06-11",
+      "last_day": "2026-07-09",
+      "day_count": 11
+    }
+  ]
+}

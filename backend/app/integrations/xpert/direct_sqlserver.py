@@ -162,14 +162,18 @@ class DirectSqlServerDataSource(XpertDataSource):
     def probe_contract(self, sql: str, parameters: dict[str, Any], limit: int = 5) -> Any:
         from app.integrations.xpert.datasource import ContractProbeResult
 
+        conn = self._connect()
+        cursor = conn.cursor()
+        prepared_sql, param_values = _prepare_sql(sql, parameters)
+        cursor.execute(prepared_sql, param_values)
+        columns = [col[0] for col in cursor.description] if cursor.description else []
         rows: list[dict[str, Any]] = []
-        for batch in self.stream_rows(sql, parameters, batch_size=limit):
+        while len(rows) < limit:
+            batch = cursor.fetchmany(limit - len(rows))
+            if not batch:
+                break
             for row in batch:
-                rows.append(row)
-                if len(rows) >= limit:
-                    break
-            break
-        columns = list(rows[0].keys()) if rows else []
+                rows.append(dict(zip(columns, row, strict=False)))
         return ContractProbeResult(columns=columns, sample_rows=rows, row_count=len(rows))
 
     def stream_rows(self, sql: str, parameters: dict[str, Any], *, batch_size: int = 1000):

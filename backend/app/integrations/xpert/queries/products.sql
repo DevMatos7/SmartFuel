@@ -1,5 +1,6 @@
 -- PRODUCTS dataset — based on docs/erp/xpert/queries/produtos.sql
 -- Parameters: @station_erp_id
+-- Inclui inativos: vendas históricas podem referenciar cadastros desativados.
 -- Contract aliases required. Validate before enabling dataset.
 SELECT
     CAST(PRODUTOS.ID_PRODUTOS AS VARCHAR(100)) AS source_product_id,
@@ -14,5 +15,4 @@ SELECT
     CAST(PRODUTOS.ATIVO AS BIT) AS source_active
 FROM PRODUTOS
 WHERE PRODUTOS.ID_FILIAL = @station_erp_id
-    AND PRODUTOS.ATIVO = 1
 ORDER BY PRODUTOS.ID_PRODUTOS

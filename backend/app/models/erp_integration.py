@@ -120,6 +120,8 @@ class ErpSyncRun(Base, UUIDPrimaryKeyMixin):
     window_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     source_upper_bound: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     query_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    normalization_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    hash_schema_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
     worker_id: Mapped[str | None] = mapped_column(String(150), nullable=True)
     rows_read: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     rows_staged: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

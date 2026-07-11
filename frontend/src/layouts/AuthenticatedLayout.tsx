@@ -5,12 +5,32 @@ import { StationSelector } from "../components/StationSelector";
 
 const analyticsItems = [
   { to: "/analytics/fuel-sales", label: "Vendas de combustíveis", permission: "fuel_sales_analytics.read" },
+  { to: "/analytics/fuel-sales/margins", label: "Margens combustíveis", permission: "fuel_sales_analytics.view_margin" },
+  { to: "/analytics/fuel-sales/prices", label: "Preços combustíveis", permission: "fuel_sales_analytics.read" },
   { to: "/analytics/fuel-sales/quality", label: "Qualidade vendas", permission: "fuel_sales_data_quality.read" },
+  { to: "/analytics/fuel-purchases", label: "Compras", permission: "fuel_purchases.read" },
+  { to: "/analytics/purchase-benchmarks", label: "Compra × cotação", permission: "purchase_benchmarks.read" },
+  { to: "/analytics/purchase-benchmarks/opportunities", label: "Oportunidades de compra", permission: "purchase_benchmarks.view_opportunity" },
+  { to: "/analytics/accounts-payable", label: "Contas a pagar", permission: "accounts_payable.read" },
+  { to: "/analytics/fuel-purchases/quality", label: "Qualidade compras", permission: "purchase_data_quality.read" },
+  { to: "/analytics/purchase-benchmarks/quality", label: "Qualidade benchmark", permission: "purchase_benchmarks.read" },
+  { to: "/analytics/nfe-documents", label: "NF-e", permission: "nfe_documents.read" },
+  { to: "/analytics/external-indices", label: "Índices externos", permission: "external_data.read" },
+  { to: "/analytics/external-indices/quality", label: "Qualidade índices", permission: "external_data.read" },
+  { to: "/analytics/market-correlation", label: "Correlação e defasagem", permission: "market_analysis.read" },
+  { to: "/analytics/market-correlation/quality", label: "Qualidade estatística", permission: "market_analysis.read" },
+  { to: "/pricing", label: "Precificação", permission: "pricing.read" },
+  { to: "/pricing/approvals", label: "Aprovações de preço", permission: "pricing.read" },
+  { to: "/pricing/quality", label: "Qualidade precificação", permission: "pricing.read" },
+  { to: "/executive", label: "Visão executiva", permission: "executive_dashboard.read" },
+  { to: "/executive/alerts", label: "Central de alertas", permission: "alerts.read" },
+  { to: "/executive/readiness", label: "Prontidão", permission: "operations.view_readiness" },
 ];
 
 const navItems = [
   { to: "/", label: "Início", permission: "dashboard.read" },
   { to: "/quotes", label: "Cotações", permission: "quotes.read" },
+  { to: "/quotes/ai", label: "Importar com IA", permission: "quote_ingestion.read" },
   { to: "/quote-comparisons", label: "Comparar cotações", permission: "quote_comparisons.run" },
   { to: "/quote-comparisons/history", label: "Histórico comparações", permission: "quote_comparisons.read" },
   { to: "/organization", label: "Organização", permission: "organizations.read" },

@@ -272,6 +272,8 @@ async def create_sync_runs(
         requested_by=user.id,
         unsafe_homologation_acknowledged=payload.unsafe_homologation_acknowledged,
         audit_ctx=audit_ctx,
+        history_start_date=payload.history_start_date,
+        history_end_date=payload.history_end_date,
     )
     await db.commit()
     for run in runs:

@@ -58,6 +58,11 @@ class Settings(BaseSettings):
     signed_url_expire_seconds: int = Field(default=300, alias="SIGNED_URL_EXPIRE_SECONDS")
 
     quote_evidence_max_size_mb: int = Field(default=10, alias="QUOTE_EVIDENCE_MAX_SIZE_MB")
+    quote_ai_max_file_size_mb: int = Field(default=10, alias="QUOTE_AI_MAX_FILE_SIZE_MB")
+    quote_ai_max_batch_files: int = Field(default=20, alias="QUOTE_AI_MAX_BATCH_FILES")
+    quote_ai_max_batch_size_mb: int = Field(default=50, alias="QUOTE_AI_MAX_BATCH_SIZE_MB")
+    quote_ai_max_pdf_pages: int = Field(default=20, alias="QUOTE_AI_MAX_PDF_PAGES")
+    quote_ai_max_image_pixels: int = Field(default=40_000_000, alias="QUOTE_AI_MAX_IMAGE_PIXELS")
     quote_expiration_interval_minutes: int = Field(
         default=15,
         alias="QUOTE_EXPIRATION_INTERVAL_MINUTES",

@@ -14,6 +14,7 @@ from app.models.distributor import ErpSupplier
 from app.models.erp_integration import ErpStagingRecord, ErpSyncRun
 from app.models.erp_product import ErpProduct
 from app.services.fuel_sales_apply_service import FuelSalesApplyService
+from app.services.fuel_purchases_apply_service import FuelPurchasesApplyService
 
 SOURCE_SYSTEM = "XPERT"
 
@@ -22,13 +23,19 @@ class XpertApplyService:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
         self.fuel_sales_apply = FuelSalesApplyService(db)
+        self.fuel_purchases_apply = FuelPurchasesApplyService(db)
 
     @property
     def pending_aggregation_keys(self):
         return self.fuel_sales_apply._affected_keys  # noqa: SLF001
 
+    @property
+    def pending_purchase_aggregation_keys(self):
+        return self.fuel_purchases_apply._affected_keys  # noqa: SLF001
+
     def clear_aggregation_keys(self) -> None:
         self.fuel_sales_apply._affected_keys.clear()  # noqa: SLF001
+        self.fuel_purchases_apply._affected_keys.clear()  # noqa: SLF001
 
     async def apply_staging_record(
         self,
@@ -47,6 +54,13 @@ class XpertApplyService:
             ErpDatasetCode.FUEL_RETAIL_PRICES,
         ):
             result = await self.fuel_sales_apply.apply_staging_record(run=run, staging=staging, now=now)
+            return result.outcome
+        if staging.dataset_code in (
+            ErpDatasetCode.FUEL_PURCHASE_INVOICES,
+            ErpDatasetCode.FUEL_PURCHASE_ITEMS,
+            ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES,
+        ):
+            result = await self.fuel_purchases_apply.apply_staging_record(run=run, staging=staging, now=now)
             return result.outcome
         staging.processing_status = ErpStagingStatus.SKIPPED_UNCHANGED
         return "skipped"

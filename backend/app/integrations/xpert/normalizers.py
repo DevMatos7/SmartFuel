@@ -101,6 +101,7 @@ def normalize_row(dataset_code: str, row: dict[str, Any]) -> dict[str, Any]:
             "source_surcharge_amount": lowered.get("source_surcharge_amount"),
             "source_cost_per_unit": lowered.get("source_cost_per_unit"),
             "source_total_cost": lowered.get("source_total_cost"),
+            "source_cfop": _clean_str(lowered.get("source_cfop")),
             "source_payment_method_id": _clean_str(lowered.get("source_payment_method_id")),
             "source_operation_type": _clean_str(lowered.get("source_operation_type")) or "SALE",
         }
@@ -115,6 +116,90 @@ def normalize_row(dataset_code: str, row: dict[str, Any]) -> dict[str, Any]:
             "source_effective_from": parse_source_datetime(lowered.get("source_effective_from")),
             "source_effective_until": parse_source_datetime(lowered.get("source_effective_until")),
             "source_updated_at": parse_source_datetime(lowered.get("source_updated_at")),
+            "valor_formapgto_mapping_source": "LEGACY_REFERENCE",
+            "valor_formapgto_mapping_status": "PROVISIONAL",
+        }
+
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_INVOICES:
+        return {
+            "source_invoice_id": _clean_str(lowered.get("source_invoice_id")),
+            "source_branch_id": _clean_str(lowered.get("source_branch_id")),
+            "source_supplier_id": _clean_str(lowered.get("source_supplier_id")),
+            "source_document_number": _clean_str(lowered.get("source_document_number")),
+            "source_issue_date": lowered.get("source_issue_date"),
+            "source_entry_date": lowered.get("source_entry_date"),
+            "source_total_amount": lowered.get("source_total_amount"),
+            "source_status": _clean_str(lowered.get("source_status")),
+            "source_updated_at": parse_source_datetime(lowered.get("source_updated_at")),
+            "source_series": _clean_str(lowered.get("source_series")),
+            "source_access_key": _clean_str(lowered.get("source_access_key")),
+            "source_operation_type": _clean_str(lowered.get("source_operation_type")) or "PURCHASE",
+            "source_freight_amount": lowered.get("source_freight_amount"),
+            "source_discount_amount": lowered.get("source_discount_amount"),
+            "source_insurance_amount": lowered.get("source_insurance_amount"),
+            "source_other_expenses": lowered.get("source_other_expenses"),
+            "source_tax_amount": lowered.get("source_tax_amount"),
+            "source_xml_imported_in_erp": _to_bool(
+                lowered.get("source_xml_imported_in_erp", lowered.get("source_xml_available")),
+                default=False,
+            ),
+            "source_cancelled": _to_bool(lowered.get("source_cancelled"), default=False),
+            "source_base_id": _clean_str(lowered.get("source_base_id")),
+            "source_payment_condition_id": _clean_str(lowered.get("source_payment_condition_id")),
+        }
+
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_ITEMS:
+        return {
+            "source_invoice_id": _clean_str(lowered.get("source_invoice_id")),
+            "source_invoice_item_id": _clean_str(lowered.get("source_invoice_item_id")),
+            "source_branch_id": _clean_str(lowered.get("source_branch_id")),
+            "source_supplier_id": _clean_str(lowered.get("source_supplier_id")),
+            "source_product_id": _clean_str(lowered.get("source_product_id")),
+            "source_quantity": lowered.get("source_quantity"),
+            "source_unit": _clean_str(lowered.get("source_unit")),
+            "source_unit_price": lowered.get("source_unit_price"),
+            "source_item_total": lowered.get("source_item_total"),
+            "source_updated_at": parse_source_datetime(lowered.get("source_updated_at")),
+            "source_product_description": _clean_str(lowered.get("source_product_description")),
+            "source_cfop": _clean_str(lowered.get("source_cfop")),
+            "source_ncm": _clean_str(lowered.get("source_ncm")),
+            "source_discount_amount": lowered.get("source_discount_amount"),
+            "source_freight_amount": lowered.get("source_freight_amount"),
+            "source_insurance_amount": lowered.get("source_insurance_amount"),
+            "source_other_expenses": lowered.get("source_other_expenses"),
+            "source_icms_amount": lowered.get("source_icms_amount"),
+            "source_icms_st_amount": lowered.get("source_icms_st_amount"),
+            "source_fcp_amount": lowered.get("source_fcp_amount"),
+            "source_pis_amount": lowered.get("source_pis_amount"),
+            "source_cofins_amount": lowered.get("source_cofins_amount"),
+            "source_total_cost": lowered.get("source_total_cost"),
+            "source_cost_per_unit": lowered.get("source_cost_per_unit"),
+            "source_cancelled": _to_bool(lowered.get("source_cancelled"), default=False),
+            "source_operation_type": _clean_str(lowered.get("source_operation_type")) or "PURCHASE",
+        }
+
+    if dataset_code == ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES:
+        return {
+            "source_title_id": _clean_str(lowered.get("source_title_id")),
+            "source_branch_id": _clean_str(lowered.get("source_branch_id")),
+            "source_supplier_id": _clean_str(lowered.get("source_supplier_id")),
+            "source_invoice_id": _clean_str(lowered.get("source_invoice_id")),
+            "source_due_date": lowered.get("source_due_date"),
+            "source_original_amount": lowered.get("source_original_amount"),
+            "source_open_amount": lowered.get("source_open_amount"),
+            "source_status": _clean_str(lowered.get("source_status")),
+            "source_updated_at": parse_source_datetime(lowered.get("source_updated_at")),
+            "source_installment_number": lowered.get("source_installment_number"),
+            "source_document_number": _clean_str(lowered.get("source_document_number")),
+            "source_issue_date": lowered.get("source_issue_date"),
+            "source_payment_date": lowered.get("source_payment_date"),
+            "source_paid_amount": lowered.get("source_paid_amount"),
+            "source_interest_amount": lowered.get("source_interest_amount"),
+            "source_penalty_amount": lowered.get("source_penalty_amount"),
+            "source_discount_amount": lowered.get("source_discount_amount"),
+            "source_bank_or_wallet": _clean_str(lowered.get("source_bank_or_wallet")),
+            "source_payment_method": _clean_str(lowered.get("source_payment_method")),
+            "source_cancelled": _to_bool(lowered.get("source_cancelled"), default=False),
         }
 
     return dict(row)
@@ -137,6 +222,12 @@ def source_key_for_row(dataset_code: str, normalized: dict[str, Any]) -> str:
             f"{normalized['source_product_id']}:"
             f"{normalized['source_payment_method_id']}"
         )
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_INVOICES:
+        return normalized["source_invoice_id"]
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_ITEMS:
+        return f"{normalized['source_invoice_id']}:{normalized['source_invoice_item_id']}"
+    if dataset_code == ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES:
+        return normalized["source_title_id"]
     raise ValueError(f"Unknown dataset: {dataset_code}")
 
 
@@ -196,6 +287,7 @@ def hash_payload_for_dataset(dataset_code: str, normalized: dict[str, Any]) -> d
                 "source_cost_per_unit",
                 "source_total_cost",
                 "source_payment_method_id",
+                "source_cfop",
             )
         }
     if dataset_code == ErpDatasetCode.FUEL_RETAIL_PRICES:
@@ -209,6 +301,82 @@ def hash_payload_for_dataset(dataset_code: str, normalized: dict[str, Any]) -> d
                 "source_active",
                 "source_effective_from",
             )
+        }
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_INVOICES:
+        return {
+            "normalization_version": "FUEL_PURCHASE_V1",
+            "hash_schema_version": 1,
+            **{
+                k: normalized.get(k)
+                for k in (
+                    "source_invoice_id",
+                    "source_supplier_id",
+                    "source_document_number",
+                    "source_issue_date",
+                    "source_entry_date",
+                    "source_total_amount",
+                    "source_status",
+                    "source_series",
+                    "source_access_key",
+                    "source_operation_type",
+                    "source_freight_amount",
+                    "source_discount_amount",
+                    "source_insurance_amount",
+                    "source_other_expenses",
+                    "source_tax_amount",
+                    "source_xml_imported_in_erp",
+                    "source_cancelled",
+                )
+            },
+        }
+    if dataset_code == ErpDatasetCode.FUEL_PURCHASE_ITEMS:
+        return {
+            "normalization_version": "FUEL_PURCHASE_V1",
+            "hash_schema_version": 1,
+            **{
+                k: normalized.get(k)
+                for k in (
+                    "source_invoice_id",
+                    "source_invoice_item_id",
+                    "source_product_id",
+                    "source_quantity",
+                    "source_unit",
+                    "source_unit_price",
+                    "source_item_total",
+                    "source_discount_amount",
+                    "source_freight_amount",
+                    "source_insurance_amount",
+                    "source_other_expenses",
+                    "source_total_cost",
+                    "source_cost_per_unit",
+                    "source_cancelled",
+                    "source_operation_type",
+                    "source_cfop",
+                )
+            },
+        }
+    if dataset_code == ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES:
+        return {
+            "normalization_version": "FUEL_PURCHASE_V1",
+            "hash_schema_version": 1,
+            **{
+                k: normalized.get(k)
+                for k in (
+                    "source_title_id",
+                    "source_invoice_id",
+                    "source_supplier_id",
+                    "source_due_date",
+                    "source_original_amount",
+                    "source_open_amount",
+                    "source_paid_amount",
+                    "source_status",
+                    "source_cancelled",
+                    "source_payment_date",
+                    "source_interest_amount",
+                    "source_penalty_amount",
+                    "source_discount_amount",
+                )
+            },
         }
     return normalized
 

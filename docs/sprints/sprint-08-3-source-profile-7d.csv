@@ -1,0 +1,12 @@
+source_invoice_id,document_number,entry_date,supplier,items_mov_count,items_fiscal_count,volume_lt_mov,volume_lt_fiscal,total_mov,total_fiscal,movement_only,fiscal_only,both_sources,neither_source
+2042179,179206,2026-07-05,305,0,4,0,0,0,57.8300,False,True,False,False
+2042182,179187,2026-07-05,305,0,3,0,0,0,42.6900,False,True,False,False
+2042174,179342,2026-07-06,305,0,2,0,0,0,20.5000,False,True,False,False
+2042176,179230,2026-07-06,305,0,2,0,0,0,22.0900,False,True,False,False
+2042185,179368,2026-07-07,305,0,2,0,0,0,22.4000,False,True,False,False
+2042187,179465,2026-07-07,305,0,2,0,0,0,22.1000,False,True,False,False
+2042162,179503,2026-07-08,305,0,2,0,0,0,21.7100,False,True,False,False
+2041821,83471,2026-07-09,486,2,2,0,0,765.6284,1016.4800,False,False,True,False
+2042163,179630,2026-07-09,305,0,2,0,0,0,16.1300,False,True,False,False
+2042165,179721,2026-07-09,305,0,2,0,0,0,21.9800,False,True,False,False
+2042189,179786,2026-07-10,305,0,2,0,0,0,27.1100,False,True,False,False

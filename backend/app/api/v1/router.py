@@ -8,12 +8,14 @@ from app.api.v1 import (
     erp_products,
     erp_suppliers,
     financial_parameters,
+    fuel_purchases_analytics,
     health,
     master_data_imports,
     organization_business_settings,
     organizations,
     payment_terms,
     products,
+    purchase_benchmarks,
     quote_comparisons,
     quotes,
     stations,
@@ -22,6 +24,11 @@ from app.api.v1 import (
     xpert_integration,
     fuel_sales_analytics,
     erp_payment_methods,
+    external_data,
+    market_analysis,
+    pricing,
+    operations,
+    quote_ingestion,
 )
 
 api_router = APIRouter()
@@ -46,3 +53,24 @@ api_router.include_router(master_data_imports.router)
 api_router.include_router(xpert_integration.router)
 api_router.include_router(fuel_sales_analytics.router)
 api_router.include_router(erp_payment_methods.router)
+api_router.include_router(fuel_purchases_analytics.analytics_router)
+api_router.include_router(fuel_purchases_analytics.invoices_router)
+api_router.include_router(fuel_purchases_analytics.ap_router)
+api_router.include_router(fuel_purchases_analytics.nfe_router)
+api_router.include_router(purchase_benchmarks.runs_router)
+api_router.include_router(purchase_benchmarks.analytics_router)
+api_router.include_router(purchase_benchmarks.invoice_bench_router)
+api_router.include_router(external_data.data_router)
+api_router.include_router(external_data.analytics_router)
+api_router.include_router(market_analysis.runs_router)
+api_router.include_router(market_analysis.analytics_router)
+api_router.include_router(pricing.pricing_router)
+api_router.include_router(pricing.analytics_router)
+api_router.include_router(operations.executive_router)
+api_router.include_router(operations.alerts_router)
+api_router.include_router(operations.alert_rules_router)
+api_router.include_router(operations.operations_router)
+api_router.include_router(operations.notifications_router)
+api_router.include_router(operations.notification_policies_router)
+api_router.include_router(quote_ingestion.router)
+api_router.include_router(quote_ingestion.analytics_router)

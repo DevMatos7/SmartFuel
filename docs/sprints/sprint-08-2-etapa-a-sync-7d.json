@@ -1,0 +1,581 @@
+{
+  "started_at": "2026-07-11T03:08:13.417314+00:00",
+  "window": {
+    "from": "2026-07-03",
+    "to": "2026-07-09",
+    "station": "1edc5c8b-0ba1-405c-a000-03e61e31521e",
+    "branch": 2443
+  },
+  "overlap_adjustment": [
+    {
+      "code": "FUEL_PURCHASE_INVOICES",
+      "overlap_before": 86400,
+      "overlap_after": 0
+    },
+    {
+      "code": "FUEL_PURCHASE_ITEMS",
+      "overlap_before": 86400,
+      "overlap_after": 0
+    },
+    {
+      "code": "ACCOUNTS_PAYABLE_TITLES",
+      "overlap_before": 86400,
+      "overlap_after": 0
+    }
+  ],
+  "preflight": {
+    "datasets": [
+      {
+        "code": "FUEL_PURCHASE_INVOICES",
+        "contract_status": "VALID",
+        "query_file": "fuel_purchase_invoices.sql",
+        "query_hash_stored": "996be7686714f9fbd9f31abb9bddae0ad3d0bf837d89544f39242e78efe5f032",
+        "query_hash_live": "996be7686714f9fbd9f31abb9bddae0ad3d0bf837d89544f39242e78efe5f032",
+        "query_hash_match": true,
+        "normalization_version_last_run": "FUEL_PURCHASE_V1",
+        "hash_schema_version_last_run": 1,
+        "overlap_seconds": 0,
+        "schedule_enabled": false,
+        "enabled": true,
+        "checkpoint_id": "ed0b9c7c-26c9-4b10-acc0-8983639da0bf",
+        "checkpoint_watermark": null,
+        "checkpoint_last_success_at": null,
+        "note": "Janela histórica explícita NÃO avança checkpoint"
+      },
+      {
+        "code": "FUEL_PURCHASE_ITEMS",
+        "contract_status": "VALID",
+        "query_file": "fuel_purchase_items.sql",
+        "query_hash_stored": "7e9a670572a195589c67a1ff78669dd2b02614f33500bcdb29648e8db90d4624",
+        "query_hash_live": "7e9a670572a195589c67a1ff78669dd2b02614f33500bcdb29648e8db90d4624",
+        "query_hash_match": true,
+        "normalization_version_last_run": "FUEL_PURCHASE_V1",
+        "hash_schema_version_last_run": 1,
+        "overlap_seconds": 0,
+        "schedule_enabled": false,
+        "enabled": true,
+        "checkpoint_id": "3e30e2e2-fa62-480e-b154-b7a7758a0147",
+        "checkpoint_watermark": null,
+        "checkpoint_last_success_at": null,
+        "note": "Janela histórica explícita NÃO avança checkpoint"
+      },
+      {
+        "code": "ACCOUNTS_PAYABLE_TITLES",
+        "contract_status": "VALID",
+        "query_file": "accounts_payable_titles.sql",
+        "query_hash_stored": "01d78e5233bc5bfe5c6e142c497c7e2418591488befe8c777f023fe716c46d92",
+        "query_hash_live": "01d78e5233bc5bfe5c6e142c497c7e2418591488befe8c777f023fe716c46d92",
+        "query_hash_match": true,
+        "normalization_version_last_run": "FUEL_PURCHASE_V1",
+        "hash_schema_version_last_run": 1,
+        "overlap_seconds": 0,
+        "schedule_enabled": false,
+        "enabled": true,
+        "checkpoint_id": "93c4ad5e-ae45-401e-b475-99421ef247db",
+        "checkpoint_watermark": null,
+        "checkpoint_last_success_at": null,
+        "note": "Janela histórica explícita NÃO avança checkpoint"
+      }
+    ],
+    "xpert": {
+      "invoices": 14,
+      "items": 2,
+      "titles": 19,
+      "volume_lt": "0",
+      "items_total_value": "1016.48",
+      "products_cadastro": [
+        {
+          "erp_id": "1",
+          "name": "ETANOL COMUM",
+          "unit": "LT",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "2",
+          "name": "GASOLINA COMUM",
+          "unit": "LT",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "4",
+          "name": "DIESEL S10 COMUM",
+          "unit": "LT",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "1271",
+          "name": "GASOLINA ADITIVADA",
+          "unit": "LT",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "1272",
+          "name": "ETANOL ADITIVADO",
+          "unit": "LT",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "1505",
+          "name": "ADITIVO FLEX 200ML BARDAHL",
+          "unit": "UN",
+          "branch": "2443"
+        },
+        {
+          "erp_id": "1506",
+          "name": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+          "unit": "UN",
+          "branch": "2443"
+        }
+      ]
+    },
+    "postgres_before": {
+      "invoices": 4,
+      "items": 2,
+      "titles": 6
+    }
+  },
+  "contract_validation": {
+    "FUEL_PURCHASE_INVOICES": {
+      "http": 200,
+      "body": {
+        "valid": true,
+        "missing_columns": [],
+        "extra_columns": [],
+        "found_columns": [
+          "source_access_key",
+          "source_base_id",
+          "source_branch_id",
+          "source_cancelled",
+          "source_discount_amount",
+          "source_document_number",
+          "source_entry_date",
+          "source_freight_amount",
+          "source_insurance_amount",
+          "source_invoice_id",
+          "source_issue_date",
+          "source_operation_type",
+          "source_other_expenses",
+          "source_payment_condition_id",
+          "source_series",
+          "source_status",
+          "source_supplier_id",
+          "source_tax_amount",
+          "source_total_amount",
+          "source_updated_at",
+          "source_xml_imported_in_erp"
+        ],
+        "query_hash": "996be7686714f9fbd9f31abb9bddae0ad3d0bf837d89544f39242e78efe5f032",
+        "sample_count": 0,
+        "isolation_sample_size": 0,
+        "isolation_errors": [],
+        "distinct_branch_ids": []
+      }
+    },
+    "FUEL_PURCHASE_ITEMS": {
+      "http": 200,
+      "body": {
+        "valid": true,
+        "missing_columns": [],
+        "extra_columns": [],
+        "found_columns": [
+          "source_branch_id",
+          "source_cancelled",
+          "source_cfop",
+          "source_cofins_amount",
+          "source_cost_per_unit",
+          "source_discount_amount",
+          "source_fcp_amount",
+          "source_freight_amount",
+          "source_icms_amount",
+          "source_icms_st_amount",
+          "source_insurance_amount",
+          "source_invoice_id",
+          "source_invoice_item_id",
+          "source_item_total",
+          "source_ncm",
+          "source_operation_type",
+          "source_other_expenses",
+          "source_pis_amount",
+          "source_product_description",
+          "source_product_id",
+          "source_quantity",
+          "source_supplier_id",
+          "source_total_cost",
+          "source_unit",
+          "source_unit_price",
+          "source_updated_at"
+        ],
+        "query_hash": "7e9a670572a195589c67a1ff78669dd2b02614f33500bcdb29648e8db90d4624",
+        "sample_count": 0,
+        "isolation_sample_size": 0,
+        "isolation_errors": [],
+        "distinct_branch_ids": []
+      }
+    },
+    "ACCOUNTS_PAYABLE_TITLES": {
+      "http": 200,
+      "body": {
+        "valid": true,
+        "missing_columns": [],
+        "extra_columns": [],
+        "found_columns": [
+          "source_bank_or_wallet",
+          "source_branch_id",
+          "source_cancelled",
+          "source_discount_amount",
+          "source_document_number",
+          "source_due_date",
+          "source_installment_number",
+          "source_interest_amount",
+          "source_invoice_id",
+          "source_issue_date",
+          "source_open_amount",
+          "source_original_amount",
+          "source_paid_amount",
+          "source_payment_date",
+          "source_payment_method",
+          "source_penalty_amount",
+          "source_status",
+          "source_supplier_id",
+          "source_title_id",
+          "source_updated_at"
+        ],
+        "query_hash": "01d78e5233bc5bfe5c6e142c497c7e2418591488befe8c777f023fe716c46d92",
+        "sample_count": 0,
+        "isolation_sample_size": 0,
+        "isolation_errors": [],
+        "distinct_branch_ids": []
+      }
+    }
+  },
+  "pass1": {
+    "FUEL_PURCHASE_INVOICES": {
+      "id": "c3b2ddcd-3e9c-40c2-9ea5-57ab5edff35d",
+      "status": "COMPLETED",
+      "rows_read": 14,
+      "rows_inserted": 10,
+      "rows_updated": 0,
+      "rows_unchanged": 4,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null,
+      "window_start": null,
+      "window_end": null
+    },
+    "FUEL_PURCHASE_ITEMS": {
+      "id": "a946d012-e601-43a4-be5e-a7101900ad7e",
+      "status": "COMPLETED",
+      "rows_read": 2,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 2,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null,
+      "window_start": null,
+      "window_end": null
+    },
+    "ACCOUNTS_PAYABLE_TITLES": {
+      "id": "7863cd37-b0aa-4178-8f3d-ba49fb6981b4",
+      "status": "COMPLETED",
+      "rows_read": 19,
+      "rows_inserted": 13,
+      "rows_updated": 0,
+      "rows_unchanged": 6,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null,
+      "window_start": null,
+      "window_end": null
+    }
+  },
+  "postgres_after_pass1": {
+    "invoices": 14,
+    "items": 2,
+    "titles_in_window_or_station": 19,
+    "cancelled_invoices": 0,
+    "returns": 0,
+    "items_mapped": 0,
+    "volume_liters_sum": "0",
+    "commercial_delivered_cost_sum": "765.6284",
+    "source_units": {
+      "UN": 2
+    },
+    "title_link_status": {
+      "PENDING_INVOICE_LINK": 4,
+      "LINKED": 15
+    },
+    "exclusion_reason_counts": {
+      "UNIT_CONVERSION_REQUIRED": 2,
+      "UNMAPPED_PRODUCT": 2
+    },
+    "documents": [
+      "179022",
+      "179089",
+      "179178",
+      "179106",
+      "179206",
+      "179187",
+      "179342",
+      "179230",
+      "179368",
+      "179465",
+      "179503",
+      "83471",
+      "179630",
+      "179721"
+    ]
+  },
+  "missing_erp_products_before_map": [],
+  "mapping": {
+    "ignored": [
+      {
+        "erp_product_id": "1505",
+        "http": 200,
+        "body": "{\"id\":\"64889f41-a04d-486e-b639-9bd3bc51dc62\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"1505\",\"erp_product_code\":\"1505\",\"erp_description\":\"ADITIVO FLEX 200ML BARDAHL\",\"erp_unit\":null,\"erp_group_id\":null,\"erp_group_na"
+      },
+      {
+        "erp_product_id": "1506",
+        "http": 200,
+        "body": "{\"id\":\"07ec6924-678d-4860-bec4-edfbff3f3f93\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"1506\",\"erp_product_code\":\"1506\",\"erp_description\":\"FLUIDO PARA RADIADOR ROSA 1L BARDAHL\",\"erp_unit\":null,\"erp_group_id\":null,\"er"
+      }
+    ],
+    "mapped": [
+      {
+        "erp_product_id": "1",
+        "skipped": "unit_not_lt",
+        "unit": null
+      },
+      {
+        "erp_product_id": "2",
+        "skipped": "unit_not_lt",
+        "unit": null
+      },
+      {
+        "erp_product_id": "4",
+        "skipped": "unit_not_lt",
+        "unit": null
+      },
+      {
+        "erp_product_id": "1272",
+        "skipped": "unit_not_lt",
+        "unit": null
+      },
+      {
+        "erp_product_id": "1271",
+        "skipped": "unit_not_lt",
+        "unit": null
+      }
+    ],
+    "missing_erp": [],
+    "validation": [
+      {
+        "erp_product_id": "1",
+        "description": "ETANOL COMUM",
+        "unit": null,
+        "unit_is_lt": false,
+        "proposed_canonical": "ETANOL_HIDRATADO",
+        "canonical_exists": true
+      },
+      {
+        "erp_product_id": "2",
+        "description": "GASOLINA COMUM",
+        "unit": null,
+        "unit_is_lt": false,
+        "proposed_canonical": "GASOLINA_C_COMUM",
+        "canonical_exists": true
+      },
+      {
+        "erp_product_id": "4",
+        "description": "DIESEL S10 COMUM",
+        "unit": null,
+        "unit_is_lt": false,
+        "proposed_canonical": "DIESEL_B_S10_COMUM",
+        "canonical_exists": true
+      },
+      {
+        "erp_product_id": "1272",
+        "description": "ETANOL ADITIVADO",
+        "unit": null,
+        "unit_is_lt": false,
+        "proposed_canonical": "ETANOL_HIDRATADO",
+        "canonical_exists": true
+      },
+      {
+        "erp_product_id": "1271",
+        "description": "GASOLINA ADITIVADA",
+        "unit": null,
+        "unit_is_lt": false,
+        "proposed_canonical": "GASOLINA_C_ADITIVADA",
+        "canonical_exists": true
+      }
+    ]
+  },
+  "reconcile_mappings": {
+    "items_touched": 2,
+    "aggregation_keys": 2
+  },
+  "postgres_after_mapping": {
+    "invoices": 14,
+    "items": 2,
+    "titles_in_window_or_station": 19,
+    "cancelled_invoices": 0,
+    "returns": 0,
+    "items_mapped": 0,
+    "volume_liters_sum": "0",
+    "commercial_delivered_cost_sum": "765.6284",
+    "source_units": {
+      "UN": 2
+    },
+    "title_link_status": {
+      "PENDING_INVOICE_LINK": 4,
+      "LINKED": 15
+    },
+    "exclusion_reason_counts": {
+      "IGNORED_PRODUCT": 2,
+      "UNIT_CONVERSION_REQUIRED": 2
+    },
+    "documents": [
+      "179022",
+      "179089",
+      "179178",
+      "179106",
+      "179206",
+      "179187",
+      "179342",
+      "179230",
+      "179368",
+      "179465",
+      "179503",
+      "83471",
+      "179630",
+      "179721"
+    ]
+  },
+  "pass2": {
+    "FUEL_PURCHASE_INVOICES": {
+      "id": "a98ca95b-15ff-4bf7-97a2-405cfbb2fd50",
+      "status": "COMPLETED",
+      "rows_read": 14,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 14,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null
+    },
+    "FUEL_PURCHASE_ITEMS": {
+      "id": "2adc6851-a629-43aa-becb-e391cded7198",
+      "status": "COMPLETED",
+      "rows_read": 2,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 2,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null
+    },
+    "ACCOUNTS_PAYABLE_TITLES": {
+      "id": "1c5cdd20-6cd3-4aa8-9273-ede4b3e11bf4",
+      "status": "COMPLETED",
+      "rows_read": 19,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 19,
+      "rows_error": 0,
+      "checkpoint_before": null,
+      "checkpoint_after": null
+    }
+  },
+  "postgres_final": {
+    "invoices": 14,
+    "items": 2,
+    "titles_in_window_or_station": 19,
+    "cancelled_invoices": 0,
+    "returns": 0,
+    "items_mapped": 0,
+    "volume_liters_sum": "0",
+    "commercial_delivered_cost_sum": "765.6284",
+    "source_units": {
+      "UN": 2
+    },
+    "title_link_status": {
+      "PENDING_INVOICE_LINK": 4,
+      "LINKED": 15
+    },
+    "exclusion_reason_counts": {
+      "IGNORED_PRODUCT": 2,
+      "UNIT_CONVERSION_REQUIRED": 2
+    },
+    "documents": [
+      "179022",
+      "179089",
+      "179178",
+      "179106",
+      "179206",
+      "179187",
+      "179342",
+      "179230",
+      "179368",
+      "179465",
+      "179503",
+      "83471",
+      "179630",
+      "179721"
+    ]
+  },
+  "checkpoints_final": [
+    {
+      "code": "FUEL_PURCHASE_INVOICES",
+      "contract_status": "VALID",
+      "query_file": "fuel_purchase_invoices.sql",
+      "query_hash_stored": "996be7686714f9fbd9f31abb9bddae0ad3d0bf837d89544f39242e78efe5f032",
+      "query_hash_live": "996be7686714f9fbd9f31abb9bddae0ad3d0bf837d89544f39242e78efe5f032",
+      "query_hash_match": true,
+      "normalization_version_last_run": "FUEL_PURCHASE_V1",
+      "hash_schema_version_last_run": 1,
+      "overlap_seconds": 0,
+      "schedule_enabled": false,
+      "enabled": true,
+      "checkpoint_id": "ed0b9c7c-26c9-4b10-acc0-8983639da0bf",
+      "checkpoint_watermark": null,
+      "checkpoint_last_success_at": null,
+      "note": "Janela histórica explícita NÃO avança checkpoint"
+    },
+    {
+      "code": "FUEL_PURCHASE_ITEMS",
+      "contract_status": "VALID",
+      "query_file": "fuel_purchase_items.sql",
+      "query_hash_stored": "7e9a670572a195589c67a1ff78669dd2b02614f33500bcdb29648e8db90d4624",
+      "query_hash_live": "7e9a670572a195589c67a1ff78669dd2b02614f33500bcdb29648e8db90d4624",
+      "query_hash_match": true,
+      "normalization_version_last_run": "FUEL_PURCHASE_V1",
+      "hash_schema_version_last_run": 1,
+      "overlap_seconds": 0,
+      "schedule_enabled": false,
+      "enabled": true,
+      "checkpoint_id": "3e30e2e2-fa62-480e-b154-b7a7758a0147",
+      "checkpoint_watermark": null,
+      "checkpoint_last_success_at": null,
+      "note": "Janela histórica explícita NÃO avança checkpoint"
+    },
+    {
+      "code": "ACCOUNTS_PAYABLE_TITLES",
+      "contract_status": "VALID",
+      "query_file": "accounts_payable_titles.sql",
+      "query_hash_stored": "01d78e5233bc5bfe5c6e142c497c7e2418591488befe8c777f023fe716c46d92",
+      "query_hash_live": "01d78e5233bc5bfe5c6e142c497c7e2418591488befe8c777f023fe716c46d92",
+      "query_hash_match": true,
+      "normalization_version_last_run": "FUEL_PURCHASE_V1",
+      "hash_schema_version_last_run": 1,
+      "overlap_seconds": 0,
+      "schedule_enabled": false,
+      "enabled": true,
+      "checkpoint_id": "93c4ad5e-ae45-401e-b475-99421ef247db",
+      "checkpoint_watermark": null,
+      "checkpoint_last_success_at": null,
+      "note": "Janela histórica explícita NÃO avança checkpoint"
+    }
+  ],
+  "finished_at": "2026-07-11T03:09:36.435898+00:00"
+}

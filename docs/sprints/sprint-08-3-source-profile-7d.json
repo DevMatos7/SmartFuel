@@ -1,0 +1,701 @@
+{
+  "period": {
+    "from": "2026-07-05",
+    "to": "2026-07-11",
+    "days": 7,
+    "branch": 2443
+  },
+  "itenscomprovante_column_map": {
+    "id": "ID_ITENSCOMPROVANTE",
+    "invoice": "ID_COMPROVANTE",
+    "product": "ID_PRODUTOS",
+    "qty": "QTDE",
+    "unit_price": "VLRUNITARIO",
+    "total": "VLRTOTALITEM",
+    "filial": "ID_FILIAL",
+    "db": "ID_DB",
+    "desc": null,
+    "cfop": "CFOP",
+    "ncm": null,
+    "discount": "VLRDESCONTO",
+    "seq": "DFE_NITEM",
+    "cost": "VLRCUSTO",
+    "freight": "VLRFRETE",
+    "insurance": "VLRSEGURO",
+    "other": "VLROUTROS",
+    "icms": "VLRICMSITEM",
+    "icms_st": "VLRSUBSTITEM",
+    "fcp": "VALOR_FECOP"
+  },
+  "itenscomprovante_columns": [
+    {
+      "name": "ID_ITENSCOMPROVANTE",
+      "type": "int",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ID_FILIAL",
+      "type": "smallint",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ID_DB",
+      "type": "smallint",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ID_COMPROVANTE",
+      "type": "int",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ID_PRODUTOS",
+      "type": "int",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ID_FUNCIONARIOS",
+      "type": "smallint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ID_BICOS",
+      "type": "smallint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "TIPOTRIBUTACAO",
+      "type": "tinyint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "QTDE",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRCUSTO",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRUNITARIO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ALIQUOTAIPI",
+      "type": "smallmoney",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRBASEIPI",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRDESCONTO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CFOP",
+      "type": "varchar",
+      "length": 8,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRTOTALITEM",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ALIQUOTA",
+      "type": "smallmoney",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRBASE",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "SERVICO",
+      "type": "tinyint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "DATAREPL",
+      "type": "datetime",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "SLDPROD",
+      "type": "tinyint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRBASEENTR",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRACRESCIMO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "PERCREDUCAOICMS",
+      "type": "smallmoney",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "MARGEMBR",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRSUBSTITEM",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "REGALT",
+      "type": "bit",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "DESCONTORATEADO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ACRESCIMORATEADO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CSTPIS",
+      "type": "tinyint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CSTCOFINS",
+      "type": "tinyint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "REDUCAO",
+      "type": "bit",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRICMSITEM",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRFRETE",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRSEGURO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLROUTROS",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ID_CONSOLE_ENCERRANTE",
+      "type": "int",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ALIQ_FECOP",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VALOR_FECOP",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLRVENDAENTRADA",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ICMS_DESONERADO",
+      "type": "decimal",
+      "length": null,
+      "nullable": "NO"
+    },
+    {
+      "name": "ALIQ_ICMS_PRESUM_EFET",
+      "type": "smallmoney",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "BASE_ICMS_PRESUM_EFET",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VALOR_ICMS_PRESUM_EFET",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "DESCONTO_FINANCEIRO",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ACRESCIMO_FINANCEIRO",
+      "type": "real",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CODBENEFICIOFISCAL",
+      "type": "varchar",
+      "length": 10,
+      "nullable": "YES"
+    },
+    {
+      "name": "PERCICMSDIF",
+      "type": "smallmoney",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "QTDE_BC_MONO_RET",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "ALIQ_MONO_RET",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "VLR_MONO_RET",
+      "type": "decimal",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CODIGOBARRAPRODUTO",
+      "type": "varchar",
+      "length": 20,
+      "nullable": "YES"
+    },
+    {
+      "name": "VITEM",
+      "type": "money",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "DFE_NITEM",
+      "type": "smallint",
+      "length": null,
+      "nullable": "YES"
+    },
+    {
+      "name": "CODIGOITEM_PROMOCAO_PARCEIRO",
+      "type": "varchar",
+      "length": 20,
+      "nullable": "YES"
+    },
+    {
+      "name": "CODIGOPROMOCAO_PARCEIRO",
+      "type": "varchar",
+      "length": 20,
+      "nullable": "YES"
+    }
+  ],
+  "itensmovprodutos_columns_count": 34,
+  "totals": {
+    "invoices": 11,
+    "invoices_with_mov_items": 1,
+    "invoices_with_fiscal_items": 11,
+    "movement_only": 0,
+    "fiscal_only": 10,
+    "both_sources": 1,
+    "neither_source": 0,
+    "items_mov": 2,
+    "items_fiscal": 25,
+    "volume_lt_mov": "0",
+    "volume_lt_fiscal": "0",
+    "volume_lt_fuel_mov": "0",
+    "volume_lt_fuel_fiscal": "0",
+    "total_mov": "765.6284",
+    "total_fiscal": "1291.0200"
+  },
+  "candidate_days_fuel_lt_movement": [],
+  "recommended_one_day": null,
+  "product_profile": [
+    {
+      "erp_product_id": "1",
+      "name": "ETANOL COMUM",
+      "unit": "LT",
+      "is_fuel_candidate": true,
+      "should_ignore": false,
+      "mov_rows": 0,
+      "mov_qty": "0",
+      "fiscal_rows": 0,
+      "fiscal_qty": "0"
+    },
+    {
+      "erp_product_id": "2",
+      "name": "GASOLINA COMUM",
+      "unit": "LT",
+      "is_fuel_candidate": true,
+      "should_ignore": false,
+      "mov_rows": 0,
+      "mov_qty": "0",
+      "fiscal_rows": 0,
+      "fiscal_qty": "0"
+    },
+    {
+      "erp_product_id": "4",
+      "name": "DIESEL S10 COMUM",
+      "unit": "LT",
+      "is_fuel_candidate": true,
+      "should_ignore": false,
+      "mov_rows": 0,
+      "mov_qty": "0",
+      "fiscal_rows": 0,
+      "fiscal_qty": "0"
+    },
+    {
+      "erp_product_id": "1271",
+      "name": "GASOLINA ADITIVADA",
+      "unit": "LT",
+      "is_fuel_candidate": true,
+      "should_ignore": false,
+      "mov_rows": 0,
+      "mov_qty": "0",
+      "fiscal_rows": 0,
+      "fiscal_qty": "0"
+    },
+    {
+      "erp_product_id": "1272",
+      "name": "ETANOL ADITIVADO",
+      "unit": "LT",
+      "is_fuel_candidate": true,
+      "should_ignore": false,
+      "mov_rows": 0,
+      "mov_qty": "0",
+      "fiscal_rows": 0,
+      "fiscal_qty": "0"
+    },
+    {
+      "erp_product_id": "1505",
+      "name": "ADITIVO FLEX 200ML BARDAHL",
+      "unit": "UN",
+      "is_fuel_candidate": false,
+      "should_ignore": true,
+      "mov_rows": 1,
+      "mov_qty": "24.000",
+      "fiscal_rows": 1,
+      "fiscal_qty": "24.000"
+    },
+    {
+      "erp_product_id": "1506",
+      "name": "FLUIDO PARA RADIADOR ROSA 1L BARDAHL",
+      "unit": "UN",
+      "is_fuel_candidate": false,
+      "should_ignore": true,
+      "mov_rows": 1,
+      "mov_qty": "24.000",
+      "fiscal_rows": 1,
+      "fiscal_qty": "24.000"
+    }
+  ],
+  "rows": [
+    {
+      "source_invoice_id": "2042179",
+      "document_number": "179206",
+      "entry_date": "2026-07-05",
+      "supplier": "305",
+      "invoice_total": "57.8300",
+      "items_mov_count": 0,
+      "items_fiscal_count": 4,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "57.8300",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042182",
+      "document_number": "179187",
+      "entry_date": "2026-07-05",
+      "supplier": "305",
+      "invoice_total": "42.6900",
+      "items_mov_count": 0,
+      "items_fiscal_count": 3,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "42.6900",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042174",
+      "document_number": "179342",
+      "entry_date": "2026-07-06",
+      "supplier": "305",
+      "invoice_total": "20.5000",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "20.5000",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042176",
+      "document_number": "179230",
+      "entry_date": "2026-07-06",
+      "supplier": "305",
+      "invoice_total": "22.0900",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "22.0900",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042185",
+      "document_number": "179368",
+      "entry_date": "2026-07-07",
+      "supplier": "305",
+      "invoice_total": "22.4000",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "22.4000",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042187",
+      "document_number": "179465",
+      "entry_date": "2026-07-07",
+      "supplier": "305",
+      "invoice_total": "22.1000",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "22.1000",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042162",
+      "document_number": "179503",
+      "entry_date": "2026-07-08",
+      "supplier": "305",
+      "invoice_total": "21.7100",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "21.7100",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2041821",
+      "document_number": "83471",
+      "entry_date": "2026-07-09",
+      "supplier": "486",
+      "invoice_total": "1016.4800",
+      "items_mov_count": 2,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "765.6284",
+      "total_fiscal": "1016.4800",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": false,
+      "both_sources": true,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042163",
+      "document_number": "179630",
+      "entry_date": "2026-07-09",
+      "supplier": "305",
+      "invoice_total": "16.1300",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "16.1300",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042165",
+      "document_number": "179721",
+      "entry_date": "2026-07-09",
+      "supplier": "305",
+      "invoice_total": "21.9800",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "21.9800",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    },
+    {
+      "source_invoice_id": "2042189",
+      "document_number": "179786",
+      "entry_date": "2026-07-10",
+      "supplier": "305",
+      "invoice_total": "27.1100",
+      "items_mov_count": 0,
+      "items_fiscal_count": 2,
+      "volume_lt_mov": "0",
+      "volume_lt_fiscal": "0",
+      "volume_lt_fuel_mov": "0",
+      "volume_lt_fuel_fiscal": "0",
+      "total_mov": "0",
+      "total_fiscal": "27.1100",
+      "fuel_mov_rows": 0,
+      "fuel_fiscal_rows": 0,
+      "movement_only": false,
+      "fiscal_only": true,
+      "both_sources": false,
+      "neither_source": false
+    }
+  ],
+  "note": "Perfil somente leitura. Não altera pipeline. Não faz UNION das fontes. Matching canônico fica para implementação posterior."
+}

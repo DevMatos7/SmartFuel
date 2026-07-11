@@ -30,6 +30,24 @@ Campos opcionais: código ERP, unidade, grupo, subgrupo.
 
 **Desabilitado** (`MISCONFIGURED`). Não existe contrato operacional até confirmação formal do DBA sobre tabelas e colunas.
 
+### FUEL_PURCHASE_INVOICES / FUEL_PURCHASE_ITEMS / ACCOUNTS_PAYABLE_TITLES (Sprint 7)
+
+Status: **MISCONFIGURED** até SQL real validado com o DBA.
+
+Placeholders:
+
+- `fuel_purchase_invoices.sql`
+- `fuel_purchase_items.sql`
+- `accounts_payable_titles.sql`
+
+Contratos detalhados:
+
+- [fuel-purchase-invoices-contract.md](./fuel-purchase-invoices-contract.md)
+- [fuel-purchase-items-contract.md](./fuel-purchase-items-contract.md)
+- [accounts-payable-contract.md](./accounts-payable-contract.md)
+
+Parâmetros obrigatórios (quando houver SQL real): `@station_erp_id`, `@window_start`, `@window_end`.
+
 ## Validação
 
 1. Parser T-SQL confirma somente leitura.

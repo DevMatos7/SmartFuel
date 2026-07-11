@@ -1,0 +1,146 @@
+{
+  "generated_at": "2026-07-11T02:59:49.589419Z",
+  "station": {
+    "id": "1edc5c8b-0ba1-405c-a000-03e61e31521e",
+    "erp_branch_id": 2443,
+    "trade_name": "Matriz"
+  },
+  "pg_loaded_coverage": {
+    "first_purchase_day_pg": "2026-07-08",
+    "last_purchase_day_pg": "2026-07-09",
+    "days_with_purchases_pg_all": 2,
+    "invoices_pg_all": 4,
+    "items_pg_all": 2
+  },
+  "quote_readiness": {
+    "activated_quotes": 0,
+    "activated_quote_items": 0,
+    "first_activated_at": null,
+    "last_activated_at": null
+  },
+  "windows": [
+    {
+      "window_days": 1,
+      "searched_period": {
+        "from": "2026-07-11",
+        "to": "2026-07-11"
+      },
+      "xpert": {
+        "invoices_xpert": 0,
+        "items_xpert": 0,
+        "days_with_purchases_xpert": 0,
+        "first_entry_date_xpert": null,
+        "last_entry_date_xpert": null,
+        "source_units_xpert": {}
+      },
+      "postgres": {
+        "invoices_pg": 0,
+        "items_pg": 0,
+        "cancelled_invoices_pg": 0,
+        "purchase_returns_pg": 0,
+        "days_with_purchases_pg": 0,
+        "days_list_pg": [],
+        "items_mapped_pg": 0,
+        "items_volume_gt0_pg": 0,
+        "items_cost_gt0_pg": 0,
+        "source_units_pg": {},
+        "first_entry_date_pg": null,
+        "last_entry_date_pg": null
+      },
+      "gap": {
+        "invoices_missing_in_pg": 0,
+        "items_missing_in_pg": 0,
+        "interpretation": "Contagens alinhadas ou PG >= XPERT na janela."
+      }
+    },
+    {
+      "window_days": 7,
+      "searched_period": {
+        "from": "2026-07-05",
+        "to": "2026-07-11"
+      },
+      "xpert": {
+        "invoices_xpert": 11,
+        "items_xpert": 2,
+        "days_with_purchases_xpert": 6,
+        "first_entry_date_xpert": "2026-07-05",
+        "last_entry_date_xpert": "2026-07-10",
+        "source_units_xpert": {
+          "UN": 2
+        }
+      },
+      "postgres": {
+        "invoices_pg": 4,
+        "items_pg": 2,
+        "cancelled_invoices_pg": 0,
+        "purchase_returns_pg": 0,
+        "days_with_purchases_pg": 2,
+        "days_list_pg": [
+          "2026-07-08",
+          "2026-07-09"
+        ],
+        "items_mapped_pg": 0,
+        "items_volume_gt0_pg": 0,
+        "items_cost_gt0_pg": 2,
+        "source_units_pg": {
+          "UN": 2
+        },
+        "first_entry_date_pg": "2026-07-08",
+        "last_entry_date_pg": "2026-07-09"
+      },
+      "gap": {
+        "invoices_missing_in_pg": 7,
+        "items_missing_in_pg": 0,
+        "interpretation": "PG cobre apenas o subconjunto sincronizado; janela pesquisada ≠ cobertura carregada."
+      }
+    },
+    {
+      "window_days": 30,
+      "searched_period": {
+        "from": "2026-06-12",
+        "to": "2026-07-11"
+      },
+      "xpert": {
+        "invoices_xpert": 93,
+        "items_xpert": 28,
+        "days_with_purchases_xpert": 29,
+        "first_entry_date_xpert": "2026-06-12",
+        "last_entry_date_xpert": "2026-07-10",
+        "source_units_xpert": {
+          "LT": 20,
+          "UN": 7,
+          "KG": 1
+        }
+      },
+      "postgres": {
+        "invoices_pg": 4,
+        "items_pg": 2,
+        "cancelled_invoices_pg": 0,
+        "purchase_returns_pg": 0,
+        "days_with_purchases_pg": 2,
+        "days_list_pg": [
+          "2026-07-08",
+          "2026-07-09"
+        ],
+        "items_mapped_pg": 0,
+        "items_volume_gt0_pg": 0,
+        "items_cost_gt0_pg": 2,
+        "source_units_pg": {
+          "UN": 2
+        },
+        "first_entry_date_pg": "2026-07-08",
+        "last_entry_date_pg": "2026-07-09"
+      },
+      "gap": {
+        "invoices_missing_in_pg": 89,
+        "items_missing_in_pg": 26,
+        "interpretation": "PG cobre apenas o subconjunto sincronizado; janela pesquisada ≠ cobertura carregada."
+      }
+    }
+  ],
+  "formal_statement": {
+    "comparable_in_available_pg_data": 0,
+    "comparable_in_xpert_90d": "UNKNOWN_UNTIL_SYNC_AND_MAPPING",
+    "note": "REAL_COMPARABLE_PURCHASES=0 refere-se aos dados disponíveis no PostgreSQL, não ao universo completo de compras do XPERT no período pesquisado."
+  }
+}

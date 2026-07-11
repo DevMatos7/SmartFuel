@@ -1,0 +1,211 @@
+{
+  "diag": {
+    "xpert_invoices": {
+      "count": 14,
+      "min": "2026-07-03",
+      "max": "2026-07-09"
+    },
+    "xpert_items": {
+      "count": 2,
+      "lt": 0,
+      "un": 2
+    },
+    "xpert_by_day": [
+      {
+        "day": "2026-07-03",
+        "count": 2
+      },
+      {
+        "day": "2026-07-04",
+        "count": 2
+      },
+      {
+        "day": "2026-07-05",
+        "count": 2
+      },
+      {
+        "day": "2026-07-06",
+        "count": 2
+      },
+      {
+        "day": "2026-07-07",
+        "count": 2
+      },
+      {
+        "day": "2026-07-08",
+        "count": 1
+      },
+      {
+        "day": "2026-07-09",
+        "count": 3
+      }
+    ],
+    "xpert_invoice_item_counts": [
+      {
+        "source_invoice_id": "2042170",
+        "day": "2026-07-03",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042172",
+        "day": "2026-07-03",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042183",
+        "day": "2026-07-04",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042184",
+        "day": "2026-07-04",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042179",
+        "day": "2026-07-05",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042182",
+        "day": "2026-07-05",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042174",
+        "day": "2026-07-06",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042176",
+        "day": "2026-07-06",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042185",
+        "day": "2026-07-07",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042187",
+        "day": "2026-07-07",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042162",
+        "day": "2026-07-08",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042163",
+        "day": "2026-07-09",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2042165",
+        "day": "2026-07-09",
+        "item_count": 0
+      },
+      {
+        "source_invoice_id": "2041821",
+        "day": "2026-07-09",
+        "item_count": 2
+      }
+    ],
+    "xpert_fuel_units": [
+      {
+        "id": "1",
+        "name": "ETANOL COMUM",
+        "unit": "LT"
+      },
+      {
+        "id": "2",
+        "name": "GASOLINA COMUM",
+        "unit": "LT"
+      },
+      {
+        "id": "4",
+        "name": "DIESEL S10 COMUM",
+        "unit": "LT"
+      },
+      {
+        "id": "1271",
+        "name": "GASOLINA ADITIVADA",
+        "unit": "LT"
+      },
+      {
+        "id": "1272",
+        "name": "ETANOL ADITIVADO",
+        "unit": "LT"
+      }
+    ],
+    "pg_by_day": [
+      {
+        "day": "2026-07-03",
+        "count": 2
+      },
+      {
+        "day": "2026-07-04",
+        "count": 2
+      },
+      {
+        "day": "2026-07-05",
+        "count": 2
+      },
+      {
+        "day": "2026-07-06",
+        "count": 2
+      },
+      {
+        "day": "2026-07-07",
+        "count": 2
+      },
+      {
+        "day": "2026-07-08",
+        "count": 1
+      },
+      {
+        "day": "2026-07-09",
+        "count": 3
+      }
+    ],
+    "invoices_without_items_xpert": 13
+  },
+  "mapped": [
+    {
+      "erp_id": "1",
+      "canonical": "ETANOL_HIDRATADO",
+      "xpert_unit": "LT",
+      "http": 200,
+      "body": "{\"id\":\"851d623a-8e30-4bef-ac86-916d8de85efb\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"1\",\"erp_product_code\":\"1\",\"e"
+    },
+    {
+      "erp_id": "2",
+      "canonical": "GASOLINA_C_COMUM",
+      "xpert_unit": "LT",
+      "http": 200,
+      "body": "{\"id\":\"ab4c4d8c-77ef-4f9b-8a20-44973c8bc72b\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"2\",\"erp_product_code\":\"2\",\"e"
+    },
+    {
+      "erp_id": "4",
+      "canonical": "DIESEL_B_S10_COMUM",
+      "xpert_unit": "LT",
+      "http": 200,
+      "body": "{\"id\":\"44756b88-3556-4453-a14d-b5014788e423\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"4\",\"erp_product_code\":\"4\",\"e"
+    },
+    {
+      "erp_id": "1272",
+      "canonical": "ETANOL_HIDRATADO",
+      "xpert_unit": "LT",
+      "http": 200,
+      "body": "{\"id\":\"ea0d8eb5-cf33-487e-9d6b-30126a5c5214\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"1272\",\"erp_product_code\":\"12"
+    },
+    {
+      "erp_id": "1271",
+      "canonical": "GASOLINA_C_ADITIVADA",
+      "xpert_unit": "LT",
+      "http": 200,
+      "body": "{\"id\":\"8706d972-32f2-4fa8-95c6-c6d198011300\",\"organization_id\":\"8b0763b7-20a8-49a8-92b8-a74db89b9d49\",\"station_id\":\"1edc5c8b-0ba1-405c-a000-03e61e31521e\",\"erp_product_id\":\"1271\",\"erp_product_code\":\"12"
+    }
+  ]
+}

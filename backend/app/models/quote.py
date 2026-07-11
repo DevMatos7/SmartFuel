@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -32,6 +32,8 @@ class Quote(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     source_channel: Mapped[str] = mapped_column(String(30), nullable=False)
     entry_method: Mapped[str] = mapped_column(String(30), nullable=False, default="MANUAL")
+    origin: Mapped[str] = mapped_column(String(40), nullable=False, default="MANUAL_OPERATIONAL", index=True)
+    analytics_eligible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
 
     seller_name: Mapped[str | None] = mapped_column(String(150), nullable=True)
     seller_contact: Mapped[str | None] = mapped_column(String(150), nullable=True)

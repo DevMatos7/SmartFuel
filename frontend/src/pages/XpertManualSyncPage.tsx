@@ -20,6 +20,16 @@ function isFullMode(mode: string) {
   return FULL_MODES.includes(mode);
 }
 
+function defaultHistoryRange() {
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - 30);
+  return {
+    history_start_date: from.toISOString().slice(0, 10),
+    history_end_date: to.toISOString().slice(0, 10),
+  };
+}
+
 export function XpertManualSyncPage() {
   const navigate = useNavigate();
   const { hasPermission } = useAuth();
@@ -34,6 +44,7 @@ export function XpertManualSyncPage() {
   const [unsafeAck, setUnsafeAck] = useState(false);
   const [unsafePhrase, setUnsafePhrase] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [historyRange, setHistoryRange] = useState(defaultHistoryRange);
 
   const { data: sources = [] } = useQuery({
     queryKey: ["xpert-sources"],
@@ -89,9 +100,17 @@ export function XpertManualSyncPage() {
   const lastFullAt = completedFull?.items[0]?.finished_at ?? null;
 
   const stationsBlocked = datasetCode === "STATIONS";
+  const isFuelSales = datasetCode === "FUEL_SALES_ITEMS";
+  const needsHistoryWindow =
+    isFuelSales && INCREMENTAL_MODES.includes(syncMode) && !checkpoint?.watermark_value;
   const contractInvalid = selectedDataset != null && selectedDataset.contract_status !== "VALID";
   const incrementalBlocked =
-    INCREMENTAL_MODES.includes(syncMode) && !lastFullAt && (completedFull?.total ?? 0) === 0;
+    INCREMENTAL_MODES.includes(syncMode) &&
+    !isFuelSales &&
+    !lastFullAt &&
+    (completedFull?.total ?? 0) === 0;
+  const historyWindowIncomplete =
+    needsHistoryWindow && (!historyRange.history_start_date || !historyRange.history_end_date);
 
   const allowedModes = useMemo(() => {
     if (!selectedDataset) return FULL_MODES;
@@ -112,6 +131,8 @@ export function XpertManualSyncPage() {
         station_ids: stationIds,
         sync_mode: syncMode,
         unsafe_homologation_acknowledged: isUnsafeSource ? unsafeAck : undefined,
+        history_start_date: needsHistoryWindow ? historyRange.history_start_date : undefined,
+        history_end_date: needsHistoryWindow ? historyRange.history_end_date : undefined,
       }),
     onSuccess: () => navigate("/integrations/xpert/runs"),
     onError: (e: Error) => setError(e.message),
@@ -130,6 +151,10 @@ export function XpertManualSyncPage() {
     }
     if (contractInvalid) {
       setError("Contrato do dataset não validado.");
+      return;
+    }
+    if (historyWindowIncomplete) {
+      setError("Informe o período histórico (início e fim) para a primeira carga de vendas.");
       return;
     }
     if (incrementalBlocked) {
@@ -239,6 +264,36 @@ export function XpertManualSyncPage() {
             ))}
           </div>
         </div>
+
+        {needsHistoryWindow && (
+          <div className="grid gap-4 md:col-span-2 md:grid-cols-2">
+            <label className="block text-sm">
+              <span className="text-slate-600">Início do histórico</span>
+              <input
+                type="date"
+                className="mt-1 w-full rounded border px-3 py-2"
+                value={historyRange.history_start_date}
+                onChange={(e) =>
+                  setHistoryRange((prev) => ({ ...prev, history_start_date: e.target.value }))
+                }
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="text-slate-600">Fim do histórico</span>
+              <input
+                type="date"
+                className="mt-1 w-full rounded border px-3 py-2"
+                value={historyRange.history_end_date}
+                onChange={(e) =>
+                  setHistoryRange((prev) => ({ ...prev, history_end_date: e.target.value }))
+                }
+              />
+            </label>
+            <p className="text-xs text-amber-700 md:col-span-2">
+              Primeira carga de vendas: use inicialmente 30 dias e um posto de homologação.
+            </p>
+          </div>
+        )}
       </section>
 
       {selectedDataset && primaryStationId && (
@@ -260,6 +315,11 @@ export function XpertManualSyncPage() {
           {incrementalBlocked && (
             <p className="mt-2 text-amber-700">Incremental bloqueado sem full anterior.</p>
           )}
+          {needsHistoryWindow && (
+            <p className="mt-2 text-amber-700">
+              Primeira carga incremental de vendas — informe o período histórico abaixo.
+            </p>
+          )}
         </section>
       )}
 
@@ -275,6 +335,7 @@ export function XpertManualSyncPage() {
           stationsBlocked ||
           contractInvalid ||
           incrementalBlocked ||
+          historyWindowIncomplete ||
           createMutation.isPending
         }
         onClick={handleSubmit}

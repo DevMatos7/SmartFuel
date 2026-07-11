@@ -166,9 +166,18 @@ class XpertSyncService:
             ds = create_datasource(source, fake=datasource)
             source_upper = ds.get_source_utc_time()
             run.source_upper_bound = source_upper
-            window_start, window_end = self.checkpoint_service.compute_window(
-                dataset=dataset, checkpoint=checkpoint, source_upper_bound=source_upper
-            )
+            preset_window_start = run.window_start
+            preset_window_end = run.window_end
+            # Carga histórica com intervalo explícito: usa a janela do run e NÃO avança checkpoint.
+            explicit_history_window = preset_window_start is not None and preset_window_end is not None
+            if explicit_history_window:
+                overlap = timedelta(seconds=dataset.overlap_seconds)
+                window_start = preset_window_start - overlap
+                window_end = preset_window_end
+            else:
+                window_start, window_end = self.checkpoint_service.compute_window(
+                    dataset=dataset, checkpoint=checkpoint, source_upper_bound=source_upper
+                )
             run.window_start = window_start
             run.window_end = window_end
 
@@ -289,6 +298,8 @@ class XpertSyncService:
                     run.rows_applied += 1
                 elif outcome == "unchanged":
                     run.rows_unchanged += 1
+                elif outcome == "waiting_for_invoice":
+                    run.rows_unchanged += 1
                 elif outcome == "error":
                     run.rows_error += 1
                 else:
@@ -305,6 +316,23 @@ class XpertSyncService:
                 )
                 self.apply_service.clear_aggregation_keys()
 
+            if dataset.code == ErpDatasetCode.FUEL_PURCHASE_ITEMS and self.apply_service.pending_purchase_aggregation_keys:
+                from app.services.fuel_purchase_aggregation_service import FuelPurchaseAggregationService
+
+                agg = FuelPurchaseAggregationService(self.db)
+                await agg.rebuild_keys(
+                    organization_id=run.organization_id,
+                    keys=list(self.apply_service.pending_purchase_aggregation_keys),
+                    sync_run_id=run.id,
+                )
+                self.apply_service.clear_aggregation_keys()
+
+            if dataset.code == ErpDatasetCode.FUEL_PURCHASE_INVOICES:
+                await self.apply_service.fuel_purchases_apply.reprocess_waiting_items(run=run, now=now)
+                await self.apply_service.fuel_purchases_apply.reconcile_title_links(run=run)
+
+            if dataset.code == ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES:
+                await self.apply_service.fuel_purchases_apply.reconcile_title_links(run=run)
             if run.rows_error > 0 or run.rows_quarantined > 0:
                 run.status = ErpSyncRunStatus.PARTIAL
             else:
@@ -319,7 +347,10 @@ class XpertSyncService:
                     run=run, dataset_code=dataset.code, seen_keys=seen_keys, now=now
                 )
 
-            if self.checkpoint_service.should_advance(run, dataset):
+            if (
+                not explicit_history_window
+                and self.checkpoint_service.should_advance(run, dataset)
+            ):
                 watermark = self.checkpoint_service.watermark_for_run(run, dataset)
                 await self.checkpoint_service.advance_after_success(
                     checkpoint=checkpoint,
@@ -327,6 +358,10 @@ class XpertSyncService:
                     new_watermark=watermark,
                     source_upper_bound=source_upper,
                 )
+                source.last_success_at = now
+            elif explicit_history_window:
+                # Homologação histórica: preserva watermark anterior; não cria avanço incremental.
+                run.checkpoint_after = run.checkpoint_before
                 source.last_success_at = now
 
         except Exception as exc:
@@ -491,6 +526,46 @@ class XpertSyncService:
                     errors.append({"code": "MISSING_FIELD", "message": f"{label} obrigatório.", "field": label})
             if normalized.get("source_price_per_liter") is None:
                 errors.append({"code": "MISSING_FIELD", "message": "source_price_per_liter obrigatório.", "field": "source_price_per_liter"})
+        elif dataset_code == ErpDatasetCode.FUEL_PURCHASE_INVOICES:
+            for key in (
+                "source_invoice_id",
+                "source_branch_id",
+                "source_supplier_id",
+                "source_document_number",
+                "source_status",
+            ):
+                if not normalized.get(key):
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
+            for key in ("source_issue_date", "source_entry_date", "source_total_amount", "source_updated_at"):
+                if normalized.get(key) is None:
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
+        elif dataset_code == ErpDatasetCode.FUEL_PURCHASE_ITEMS:
+            for key in (
+                "source_invoice_id",
+                "source_invoice_item_id",
+                "source_branch_id",
+                "source_supplier_id",
+                "source_product_id",
+                "source_unit",
+            ):
+                if not normalized.get(key):
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
+            for key in ("source_quantity", "source_unit_price", "source_item_total", "source_updated_at"):
+                if normalized.get(key) is None:
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
+        elif dataset_code == ErpDatasetCode.ACCOUNTS_PAYABLE_TITLES:
+            for key in (
+                "source_title_id",
+                "source_branch_id",
+                "source_supplier_id",
+                "source_invoice_id",
+                "source_status",
+            ):
+                if not normalized.get(key):
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
+            for key in ("source_due_date", "source_original_amount", "source_open_amount", "source_updated_at"):
+                if normalized.get(key) is None:
+                    errors.append({"code": "MISSING_FIELD", "message": f"{key} obrigatório.", "field": key})
         return errors
 
     async def _load_staging(self, run_id: uuid.UUID) -> list[ErpStagingRecord]:
